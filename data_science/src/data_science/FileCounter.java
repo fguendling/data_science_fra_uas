@@ -35,7 +35,7 @@ public class FileCounter extends HttpServlet {
 	static final String DB_URL = "jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306";
 	static final String USER = "data_science";
 	// db password muss hier eingetragen werden.
-	static final String PASS = "data_science_pw";
+	static final String PASS = "";
 
 	int count;
 	private File_Data_Access_Object dao;
