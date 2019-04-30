@@ -7,7 +7,9 @@ Das Repository clonen oder git pull ausführen, um den aktuellsten Stand zu erha
 
 Tomcat Verzeichnis, mariadb-java-client.jar und java-json.jar ein Verzeichnis über dem "data_science" Verzeichnis ablegen.
 
-Eventuell den Build Path anpassen.
+jQuery Runterladen und ins WebContent Directory ablegen.
+
+Eventuell den Build Path in Eclipse anpassen.
 
 Das Datenbankpasswort in den Code integrieren.
 
