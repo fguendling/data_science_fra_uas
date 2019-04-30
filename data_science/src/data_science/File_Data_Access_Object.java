@@ -6,7 +6,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 
+// Die ganze Klasse ist dafür da, um eine Zahl in einem File zu speichern.
+// Das ist für das Data Science Projekt nicht von Bedeutung.
 public class File_Data_Access_Object {
 
 	public int getCount() {

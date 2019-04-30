@@ -2,14 +2,22 @@ package data_science;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import data_science.File_Data_Access_Object;
+
+import org.json.*;
+
 
 /**
  * Servlet implementation class FileCounter
@@ -17,12 +25,17 @@ import data_science.File_Data_Access_Object;
 
 @WebServlet("/FileCounter")
 public class FileCounter extends HttpServlet {
-	private static final long serialVersionUID = 1L;
 
+	private static final long serialVersionUID = 1L;
+	
+	JSONObject o1 = new JSONObject();
+	ArrayList<JSONObject> json_object_array = new ArrayList<JSONObject>();
+	
 	static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
 	static final String DB_URL = "jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306";
 	static final String USER = "data_science";
-	static final String PASS = "";
+	// db password muss hier eingetragen werden.
+	static final String PASS = "data_science_pw";
 
 	int count;
 	private File_Data_Access_Object dao;
@@ -30,7 +43,7 @@ public class FileCounter extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Set a cookie for the user, so that the counter does not increate
+		// Set a cookie for the user, so that the counter does not increase
 		// every time the user press refresh
 		HttpSession session = request.getSession(true);
 		// Set the session valid for 5 secs
@@ -40,28 +53,32 @@ public class FileCounter extends HttpServlet {
 		if (session.isNew()) {
 			count++;
 		}
-		out.println("This site has been accessed " + count + " times.");
-		out.println(request.getParameter("Vorname"));
-		out.println(request.getParameter("Nachname"));
+		// out.println("This site has been accessed " + count + " times.");
 
+		// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
+		// an das Backend übergeben werden
+		// out.println(request.getParameter("Vorname"));
+		// out.println(request.getParameter("Nachname"));
+
+		// Database connection...
 		Connection conn = null;
 		Statement stmt = null;
 		try {
-			// STEP 2: Register JDBC driver
 			Class.forName("org.mariadb.jdbc.Driver");
-
-			// STEP 3: Open a connection
 			conn = DriverManager.getConnection("jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306",
 					USER, PASS);
-			out.println("Connected database successfully...");
-
-			// Abfrage
 			Statement select = conn.createStatement();
-			ResultSet result = select.executeQuery("SELECT firstname from test.my_data;");
+			ResultSet result = select.executeQuery("SELECT * from test.country_values;");
+			String jsonString ="[";
 			while (result.next()) {
-				out.print(result.getString(1));
+				
+				  o1.put("Country", result.getString(1));
+				  o1.put("Value", result.getString(2));
+				  
+				  jsonString = jsonString + o1.toString() + ',';
+				  
 			}
-
+			out.println(jsonString.substring(0, jsonString.length()-1) + ']');			
 		} catch (SQLException se) {
 			// Handle errors for JDBC
 			se.printStackTrace();
@@ -86,12 +103,13 @@ public class FileCounter extends HttpServlet {
 		} // end try
 	}// end main
 
+	// aktuell nicht in Verwendung.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		out.println(request.getParameter("myInput"));
 	}
-
+	
 	@Override
 	public void init() throws ServletException {
 		dao = new File_Data_Access_Object();

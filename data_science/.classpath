@@ -15,5 +15,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="/Users/felix/eclipse-workspace/mariadb-java-client-2.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/felix/eclipse-workspace/java-json.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
