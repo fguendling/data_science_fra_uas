@@ -1,16 +1,10 @@
 # data_science_fra_uas
 Das ist unser Repository für das Data Science Projekt.
 
-How To:
+Wichtig:
 
-Das Repository clonen oder git pull ausführen, um den aktuellsten Stand zu erhalten.
+Wir verwenden Maven, da das NLP und der Crawler am einfachsten auf diese Weise ins Projekt eingebunden werden können.
 
-Tomcat Verzeichnis, mariadb-java-client.jar und java-json.jar ein Verzeichnis über dem "data_science" Verzeichnis ablegen.
+Der Aufbau des Maven Projekts unterscheidet sich deutlich von dem ursprünglichen Ansatz, daher ist das "data_science" Verzeichnis hier gar nicht mehr relevant. 
 
-jQuery Runterladen und ins WebContent Directory ablegen.
-
-Eventuell den Build Path in Eclipse anpassen.
-
-Das Datenbankpasswort in den Code integrieren.
-
-Compile and run.
+Nur das Verzeichnis "MavenApp" ist von Bedeutung.
