@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 
 import org.json.*;
 
-
 /**
  * Servlet implementation class FileCounter
  */
@@ -27,16 +26,13 @@ import org.json.*;
 public class FileCounter extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	
 	JSONObject o1 = new JSONObject();
 	ArrayList<JSONObject> json_object_array = new ArrayList<JSONObject>();
-	
 	static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
 	static final String DB_URL = "jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306";
 	static final String USER = "data_science";
 	// db password muss hier eingetragen werden.
-	static final String PASS = "";
-
+	static final String PASS = "data_science_pw";
 	int count;
 	private File_Data_Access_Object dao;
 
@@ -69,16 +65,13 @@ public class FileCounter extends HttpServlet {
 					USER, PASS);
 			Statement select = conn.createStatement();
 			ResultSet result = select.executeQuery("SELECT * from test.country_values;");
-			String jsonString ="[";
+			String jsonString = "[";
 			while (result.next()) {
-				
-				  o1.put("Country", result.getString(1));
-				  o1.put("Value", result.getString(2));
-				  
-				  jsonString = jsonString + o1.toString() + ',';
-				  
+				o1.put("Country", result.getString(1));
+				o1.put("Value", result.getString(2));
+				jsonString = jsonString + o1.toString() + ',';
 			}
-			out.println(jsonString.substring(0, jsonString.length()-1) + ']');			
+			out.println(jsonString.substring(0, jsonString.length() - 1) + ']');
 		} catch (SQLException se) {
 			// Handle errors for JDBC
 			se.printStackTrace();
@@ -109,7 +102,7 @@ public class FileCounter extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.println(request.getParameter("myInput"));
 	}
-	
+
 	@Override
 	public void init() throws ServletException {
 		dao = new File_Data_Access_Object();
