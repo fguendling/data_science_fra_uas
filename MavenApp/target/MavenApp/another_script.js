@@ -5,5 +5,12 @@ $( document ).ready(function() {
 	    $('a').removeClass('active');
 	    $(this).addClass('active');
 	});	
+	
+	$.ajax({url: "/MavenApp/SimpleServlet", success: function(result){
+	    $("#Jobsuche_Basic").html(result);
+	  }});
+	
+	
+	
 });
 

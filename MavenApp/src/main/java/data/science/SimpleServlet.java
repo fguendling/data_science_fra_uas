@@ -39,6 +39,9 @@ import org.json.*;
 			response.setContentType("text/plain");
 			PrintWriter out = response.getWriter();
 			
+			MyCrawler crawler = new MyCrawler();
+			String title_of_indeed_search = crawler.crawl();
+			
 			// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
 			// an das Backend übergeben werden
 			// out.println(request.getParameter("Vorname"));
@@ -59,7 +62,13 @@ import org.json.*;
 					o1.put("Value", result.getString(2));
 					jsonString = jsonString + o1.toString() + ',';
 				}
-				out.println(jsonString.substring(0, jsonString.length() - 1) + ']');
+				// hier können die JSON Daten ausgegeben werden
+				// die werden auch für die Erstellung des Charts benötigt.
+				// out.println(jsonString.substring(0, jsonString.length() - 1) + ']');
+				
+				// aktuell wird aber das gecrawlte html ausgegeben.
+				   out.println(title_of_indeed_search);
+				   
 			} catch (SQLException se) {
 				// Handle errors for JDBC
 				se.printStackTrace();

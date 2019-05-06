@@ -1,0 +1,6 @@
+0:0:0:0:0:0:0:1 - - [06/May/2019:10:27:57 +0200] "GET /MavenApp/MyCrawler HTTP/1.1" 404 987 http-bio-8080-exec-1 26
+0:0:0:0:0:0:0:1 - - [06/May/2019:10:28:08 +0200] "GET /MavenApp/SimpleServlet HTTP/1.1" 200 64 http-bio-8080-exec-3 1909
+0:0:0:0:0:0:0:1 - - [06/May/2019:10:28:54 +0200] "GET /MavenApp/ HTTP/1.1" 304 - http-bio-8080-exec-4 7
+0:0:0:0:0:0:0:1 - - [06/May/2019:10:28:54 +0200] "GET /MavenApp/another_script.js HTTP/1.1" 200 313 http-bio-8080-exec-6 3
+0:0:0:0:0:0:0:1 - - [06/May/2019:10:28:54 +0200] "GET /MavenApp/SimpleServlet HTTP/1.1" 200 64 http-bio-8080-exec-7 462
+0:0:0:0:0:0:0:1 - - [06/May/2019:10:28:54 +0200] "GET /MavenApp/SimpleServlet HTTP/1.1" 200 64 http-bio-8080-exec-8 342
