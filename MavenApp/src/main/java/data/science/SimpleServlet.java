@@ -41,7 +41,7 @@ import org.json.*;
 			PrintWriter out = response.getWriter();
 			
 			MyCrawler crawler = new MyCrawler();
-			String title_of_indeed_search = crawler.crawl();
+			String title_of_indeed_search = crawler.crawl("https://de.indeed.com/Jobs?q=apex&l=Frankfurt+am+Main");
 			
 			// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
 			// an das Backend übergeben werden
