@@ -1,7 +1,9 @@
 package data.science;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,22 +11,47 @@ import org.jsoup.select.Elements;
 
 public class MyCrawler {
 
-	String awesome_string = new String();
-	Element result_count;
-	int run = 1;
-	int suffix = 0;
+	// int suffix = 0;
 	String pagination_test_string = new String();
+	java.sql.Connection conn;
+	int child_count = 1;
+	String data_pp_value = "";
+	String href_val = "";
 
-	public String crawl(String main_search_url) throws IOException {
+	MyCrawler() {
+		try {
+			// create a mysql database connection
+			String myDriver = "org.mariadb.jdbc.Driver";
+			String myUrl = "jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306";
+			Class.forName(myDriver);
+			conn = DriverManager.getConnection(myUrl, "data_science", "data_science_pw");
+		} catch (Exception e) {
+			System.err.println("Got an exception!");
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public void crawl(String main_search_url) throws IOException, SQLException {
 
 		// Basic JobSuche enthält in der Url sowohl Suchbegriff als auch Ort.
-		Document doc = Jsoup.connect((main_search_url + "&start=" + Integer.toString(suffix))).get();
+		Document doc = Jsoup.connect(main_search_url).get();
 
-		// es wird später geschaut, ob die Seite in der pagination den Begriff "Weiter" enthält
+		// es wird später geschaut, ob die Seite in der pagination den Begriff "Weiter"
+		// enthält
 		Element test_element = doc.select("div.pagination").first();
 		pagination_test_string = test_element.outerHtml();
-		
 
+		// der Wert des data-pp Attributs wird benötigt um die korrekten Links zu
+		// ermitteln.
+
+		if (pagination_test_string.contains("Weiter")) {
+			href_val = test_element.child(child_count).attr("abs:href");
+			data_pp_value = test_element.child(child_count).attr("data-pp");
+		
+		} else {
+			System.out.println("it's fine");
+			
+		}
 		// Die Subpages sind das, was eigentlich relevant ist.
 		// Die Links zu den Subpages werden folgendermaßen ermittelt
 		Elements links = doc.select("[data-tn-element=\"jobTitle\"]");
@@ -46,18 +73,56 @@ public class MyCrawler {
 			// Firma, die ausschreibt
 			Element company = subpage_doc.select("div[class=\"icl-u-lg-mr--sm icl-u-xs-mr--xs\"]").first();
 
-			// hier sollte das Zeug in die Datenbank geschrieben werden.
-			awesome_string = awesome_string + title.text() + "<br>";
+			// the mysql insert statement
+			String query = " insert into test.Auschreibungen "
+					+ "(Auschreibungs_Titel, Auschreibungs_Inhalt, Webseite, Suchbegriff_Ort, "
+					+ "Suchbegriff_Job, Firma, Datum)" + " values (?, ?, ?, ?, ?, ?, ?)";
 
+			java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
+
+			// create the mysql insert preparedstatement
+			PreparedStatement preparedStmt = conn.prepareStatement(query);
+			preparedStmt.setString(1, title.text());
+			preparedStmt.setString(2, content.text());
+			preparedStmt.setString(3, "Indeed.com");
+			preparedStmt.setString(4, "Frankfurt am Main");
+			preparedStmt.setString(5, "Data Scientist");
+			preparedStmt.setString(6, company.text());
+			preparedStmt.setTimestamp(7, date);
+
+			// execute the preparedstatement
+			preparedStmt.execute();
 		}
-		
-		suffix = suffix + 10;
-		
+
+		// suffix = suffix + 10;
+		// child_count ist die Stelle in der Pagination, die gerade relevant ist.
+		child_count = child_count + 1;
+
 		while (pagination_test_string.contains("Weiter")) {
-			crawl(main_search_url);
+
+			// Beim Sprung von Seite 1 auf zwei kommt ein weiteres child "zurück" dazu,
+			// daher ist hier noch ein weiteres mal hoch zu zählen.
+			if ((pagination_test_string.contains("Zurück")==false)) {
+				child_count = child_count + 1;
+			}
+			
+			// es kann nicht mehr als 6 childs geben
+			if(child_count==7) {
+				child_count = 6;
+			}
+
+			// Es gibt ein ganz gemeines data-pp attribut, das in der Pagination versteckt
+			// ist.
+			// Jede Ergebnisseite hat einen solchen data-pp Wert zugeordnet.
+			// Dieser wird bei einem Klick auf den Link zur Ergebnisseite
+			// per JavaScript verarbeitet und temporär zur URL hinzugefügt.
+			// Dadurch wird die Ergebnismenge (Jobanzeigen, die pro Seite geliefert werden)
+			// beeinflusst.
+			System.out.println((child_count));
+			System.out.println((href_val + "&pp=" + data_pp_value));
+			crawl((href_val + "&pp=" + data_pp_value));
 		}
 
-		return awesome_string;
-
+		conn.close();
 	}
 }

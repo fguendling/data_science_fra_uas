@@ -6,11 +6,12 @@ $( document ).ready(function() {
 	    $(this).addClass('active');
 	});	
 	
+	/*
 	$.ajax({url: "/MavenApp/SimpleServlet", success: function(result){
 		$("#Jobsuche_Basic").html(result);
 		// text (m. escaped characters)
 		// $("#Jobsuche_Basic").text(result).html();
 	  }});
-	
+	*/
 });
 

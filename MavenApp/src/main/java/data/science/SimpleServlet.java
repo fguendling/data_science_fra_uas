@@ -34,14 +34,22 @@ import org.json.*;
 				throws ServletException, IOException {
 			// Set a cookie for the user, so that the counter does not increase
 			// every time the user press refresh
-			HttpSession session = request.getSession(true);
+			// HttpSession session = request.getSession(true);
 			// Set the session valid for 5 secs
-			session.setMaxInactiveInterval(5);
+			// session.setMaxInactiveInterval(5);
 			response.setContentType("text/plain");
 			PrintWriter out = response.getWriter();
 			
 			MyCrawler crawler = new MyCrawler();
-			String title_of_indeed_search = crawler.crawl("https://de.indeed.com/Jobs?q=apex&l=Frankfurt+am+Main");
+			try {
+				crawler.crawl("https://de.indeed.com/data-scientist-Jobs-in-Frankfurt-am-Main");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			// Ausgabe in Frontend funktioniert nicht mehr auf diese Weise
+			//String title_of_indeed_search = crawler.crawl("https://de.indeed.com/Jobs?q=apex&l=Frankfurt+am+Main");
 			
 			// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
 			// an das Backend übergeben werden
@@ -67,8 +75,8 @@ import org.json.*;
 				// die werden auch für die Erstellung des Charts benötigt.
 				// out.println(jsonString.substring(0, jsonString.length() - 1) + ']');
 				
-				// aktuell wird aber das gecrawlte html ausgegeben.
-				   out.println(title_of_indeed_search);
+				// es wurde das gecrawlte html ausgegeben.
+				// out.println(title_of_indeed_search);
 				   
 			} catch (SQLException se) {
 				// Handle errors for JDBC
