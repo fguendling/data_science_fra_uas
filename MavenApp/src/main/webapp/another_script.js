@@ -6,6 +6,14 @@ $( document ).ready(function() {
 	    $(this).addClass('active');
 	});	
 	
+	// test
+	$('.topnav a').on('click', function(){
+	    my_id = this.id;
+	    
+	    if (my_id == "Crawl_and_NLP"){
+	    	$('#content').html("crawler buttons go here")
+	    }
+	});	
 	/*
 	$.ajax({url: "/MavenApp/SimpleServlet", success: function(result){
 		$("#Jobsuche_Basic").html(result);

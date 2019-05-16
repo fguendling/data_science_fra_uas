@@ -73,25 +73,34 @@ public class MyCrawler {
 			// Firma, die ausschreibt
 			Element company = subpage_doc.select("div[class=\"icl-u-lg-mr--sm icl-u-xs-mr--xs\"]").first();
 
+			
+
+			
 			// the mysql insert statement
-			String query = " insert into test.Auschreibungen "
-					+ "(Auschreibungs_Titel, Auschreibungs_Inhalt, Webseite, Suchbegriff_Ort, "
+			String query = " insert into test.Ausschreibungen "
+					+ "(Ausschreibungs_Titel, ausschreibungs_inhalt, Webseite, Suchbegriff_Ort, "
 					+ "Suchbegriff_Job, Firma, Datum)" + " values (?, ?, ?, ?, ?, ?, ?)";
 
 			java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 
 			// create the mysql insert preparedstatement
 			PreparedStatement preparedStmt = conn.prepareStatement(query);
-			preparedStmt.setString(1, title.text());
+			preparedStmt.setString(1, title.html());
 			preparedStmt.setString(2, content.text());
 			preparedStmt.setString(3, "Indeed.com");
 			preparedStmt.setString(4, "Frankfurt am Main");
-			preparedStmt.setString(5, "Data Scientist");
+			
+			/*
+			 * Vorsicht Job und Ort sind hardcodiert.
+			 * */
+			
+			preparedStmt.setString(5, "Apex");
 			preparedStmt.setString(6, company.text());
 			preparedStmt.setTimestamp(7, date);
 
 			// execute the preparedstatement
-			preparedStmt.execute();
+			preparedStmt.execute();			
+						
 		}
 
 		// suffix = suffix + 10;
