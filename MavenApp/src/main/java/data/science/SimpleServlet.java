@@ -36,28 +36,22 @@ public class SimpleServlet extends HttpServlet {
 
 		response.setContentType("text/plain");
 		PrintWriter out = response.getWriter();
+		System.out.println("doGet wird aufgerufen.");
+	}
 
-		/*
-		 * Crawler
-		 *
-		 * MyCrawler crawler = new MyCrawler(); try { crawler.crawl(
-		 * "https://de.indeed.com/data-scientist-Jobs-in-Frankfurt-am-Main"); } catch
-		 * (SQLException e1) { // TODO Auto-generated catch block e1.printStackTrace();
-		 * }
-		 */
+	// Ausgabe in Frontend funktioniert nicht mehr auf diese Weise
+	// String title_of_indeed_search =
+	// crawler.crawl("https://de.indeed.com/Jobs?q=apex&l=Frankfurt+am+Main");
 
-		// Ausgabe in Frontend funktioniert nicht mehr auf diese Weise
-		// String title_of_indeed_search =
-		// crawler.crawl("https://de.indeed.com/Jobs?q=apex&l=Frankfurt+am+Main");
+	// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
+	// an das Backend übergeben werden
+	// out.println(request.getParameter("Vorname"));
+	// out.println(request.getParameter("Nachname"));
 
-		// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
-		// an das Backend übergeben werden
-		// out.println(request.getParameter("Vorname"));
-		// out.println(request.getParameter("Nachname"));
+	// Das diente als Beispiel dafür, wie Daten aus der DB als JSON verpackt wurden.
+	// kann man spätere löschen.
 
-		// Database connection...
-		// Das diente als Beispiel dafür, wie Daten aus der DB als JSON verpackt wurden.
-		// kann man spätere löschen.
+// Database connection...	
 //		Connection conn = null;
 //		Statement stmt = null;
 //		try {
@@ -73,38 +67,13 @@ public class SimpleServlet extends HttpServlet {
 //				jsonString = jsonString + o1.toString() + ',';
 //
 //			}
-		// hier können die JSON Daten ausgegeben werden
-		// die werden auch für die Erstellung des Charts benötigt.
-		// out.println(jsonString.substring(0, jsonString.length() - 1) + ']');
 
-		// es wurde das gecrawlte html ausgegeben.
-		// out.println(title_of_indeed_search);
+	// hier können die JSON Daten ausgegeben werden
+	// die werden auch für die Erstellung des Charts benötigt.
+	// out.println(jsonString.substring(0, jsonString.length() - 1) + ']');
 
-		// Test der gesamten Pipeline:
-		MyCrawler crawler = new MyCrawler();
-		try {
-			crawler.crawl("https://de.indeed.com/data-scientist-Jobs-in-Frankfurt-am-Main");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		BasicNLP myNLP;
-		try {
-			myNLP = new BasicNLP();
-			myNLP.create_pos();
-
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	// out.println(output);
-	// man muss .../MavenApp/SimpleServlet aufrufen, um den output zu sehen.
+	// es wurde das gecrawlte html ausgegeben.
+	// out.println(title_of_indeed_search);
 
 //		} catch (SQLException se) {
 //			// Handle errors for JDBC
@@ -130,11 +99,41 @@ public class SimpleServlet extends HttpServlet {
 //		} // end try
 //	}// end main
 
-	// aktuell nicht in Verwendung.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		out.println(request.getParameter("myInput"));
+		String job_result = request.getParameter("job");
+		String place_result = request.getParameter("place");
+		String URL_result = request.getParameter("url");
+		// out.println(request.getParameter("myInput"));
+		// System.out.println("Crawler wurde aufgerufen, NLP läuft.");
+		out.println("Crawler wurde aufgerufen, NLP läuft. Die übergebenen Werte sind ");
+		out.println(job_result);
+		out.println(place_result);
+		out.println(URL_result);
+
+		// Test der gesamten Pipeline:
+		MyCrawler crawler = new MyCrawler();
+		try {
+			crawler.crawl(URL_result, job_result, place_result);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		BasicNLP myNLP;
+		try {
+			myNLP = new BasicNLP();
+			myNLP.create_pos();
+
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override

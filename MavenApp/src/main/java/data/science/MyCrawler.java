@@ -31,7 +31,7 @@ public class MyCrawler {
 		}
 	}
 
-	public void crawl(String main_search_url) throws IOException, SQLException {
+	public void crawl(String main_search_url, String job_result, String place_result) throws IOException, SQLException {
 
 		// Basic JobSuche enthält in der Url sowohl Suchbegriff als auch Ort.
 		Document doc = Jsoup.connect(main_search_url).get();
@@ -47,10 +47,10 @@ public class MyCrawler {
 		if (pagination_test_string.contains("Weiter")) {
 			href_val = test_element.child(child_count).attr("abs:href");
 			data_pp_value = test_element.child(child_count).attr("data-pp");
-		
+
 		} else {
 			System.out.println("it's fine");
-			
+
 		}
 		// Die Subpages sind das, was eigentlich relevant ist.
 		// Die Links zu den Subpages werden folgendermaßen ermittelt
@@ -73,9 +73,6 @@ public class MyCrawler {
 			// Firma, die ausschreibt
 			Element company = subpage_doc.select("div[class=\"icl-u-lg-mr--sm icl-u-xs-mr--xs\"]").first();
 
-			
-
-			
 			// the mysql insert statement
 			String query = " insert into test.Ausschreibungen "
 					+ "(Ausschreibungs_Titel, ausschreibungs_inhalt, Webseite, Suchbegriff_Ort, "
@@ -88,19 +85,14 @@ public class MyCrawler {
 			preparedStmt.setString(1, title.html());
 			preparedStmt.setString(2, content.text());
 			preparedStmt.setString(3, "Indeed.com");
-			preparedStmt.setString(4, "Frankfurt am Main");
-			
-			/*
-			 * Vorsicht Job und Ort sind hardcodiert.
-			 * */
-			
-			preparedStmt.setString(5, "Apex");
+			preparedStmt.setString(4, place_result);
+			preparedStmt.setString(5, job_result);
 			preparedStmt.setString(6, company.text());
 			preparedStmt.setTimestamp(7, date);
 
 			// execute the preparedstatement
-			preparedStmt.execute();			
-						
+			preparedStmt.execute();
+
 		}
 
 		// suffix = suffix + 10;
@@ -111,12 +103,12 @@ public class MyCrawler {
 
 			// Beim Sprung von Seite 1 auf zwei kommt ein weiteres child "zurück" dazu,
 			// daher ist hier noch ein weiteres mal hoch zu zählen.
-			if ((pagination_test_string.contains("Zurück")==false)) {
+			if ((pagination_test_string.contains("Zurück") == false)) {
 				child_count = child_count + 1;
 			}
-			
+
 			// es kann nicht mehr als 6 childs geben
-			if(child_count==7) {
+			if (child_count == 7) {
 				child_count = 6;
 			}
 
@@ -129,7 +121,7 @@ public class MyCrawler {
 			// beeinflusst.
 			System.out.println((child_count));
 			System.out.println((href_val + "&pp=" + data_pp_value));
-			crawl((href_val + "&pp=" + data_pp_value));
+			crawl((href_val + "&pp=" + data_pp_value), job_result, place_result);
 		}
 
 		conn.close();
