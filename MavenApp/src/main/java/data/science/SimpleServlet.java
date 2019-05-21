@@ -37,6 +37,8 @@ public class SimpleServlet extends HttpServlet {
 		response.setContentType("text/plain");
 		PrintWriter out = response.getWriter();
 		System.out.println("doGet wird aufgerufen.");
+		MyStanfordNLP mySNLP = new MyStanfordNLP();
+		mySNLP.doNLP();
 	}
 
 	// Ausgabe in Frontend funktioniert nicht mehr auf diese Weise
