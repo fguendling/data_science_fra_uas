@@ -83,15 +83,41 @@ public class SimpleServlet extends HttpServlet {
 					"-- Das Problem könnte man lösen, wenn ein Language Detector eingebaut wird.\n" + 
 					"and pos.pos in ('NN')) results group by results.token order by token_count desc limit 10) limited_results;\n" + 
 					"\n" 
+					//^im Prinzip für Aufgabe 1 & 2 relevant
 					
 					);
+//			String jsonString = "";
+//			while (result.next()) {
+//				jsonString = result.getString(1);
+//				}
+	
+		
+			result = select.executeQuery(
+					"SELECT CONCAT(\n" + 
+					"    '[', \n" + 
+					"    GROUP_CONCAT(json_object('token', pl_name, 'token_count', count)),\n" + 
+					"    ']'\n" + 
+					") FROM (\n" + 
+					"select count(pos.token) count, pl.name pl_name\n" + 
+					"from test.Ausschreibungs_Inhalt_POS pos\n" + 
+					"inner join test.Ausschreibungen a\n" + 
+					"inner join test.programming_languages pl\n" + 
+					"on a.ausschreibungs_id = pos.ausschreibungs_id\n" + 
+					"and pos.token=pl.name\n" + 
+					"where a.suchbegriff_job = 'Data Scientist'\n" + 
+					"group by pos.token\n" + 
+					"order by count desc\n" + 
+					"limit 10) json_results\n" + 
+					";"					);
+			// ^das Beispiel gibt die Top Programmiersprachen aus (! für Data Scientists).
+			// kann man anpassen an "Softwareentwickler" 
+			// und man hat die Lösung für Aufgabenstellung 3
 			String jsonString = "";
 			while (result.next()) {
 				jsonString = result.getString(1);
 				}
 
-		// output des json
-		out.println(jsonString);
+			out.println(jsonString);
 
 		} catch (SQLException se) {
 			// Handle errors for JDBC
@@ -125,10 +151,10 @@ public class SimpleServlet extends HttpServlet {
 		String URL_result = request.getParameter("url");
 		// out.println(request.getParameter("myInput"));
 		// System.out.println("Crawler wurde aufgerufen, NLP läuft.");
-		out.println("Crawler wurde aufgerufen, NLP läuft. Die übergebenen Werte sind ");
-		out.println(job_result);
-		out.println(place_result);
-		out.println(URL_result);
+		System.out.println("Crawler wurde aufgerufen, NLP läuft. Die übergebenen Werte sind ");
+		System.out.println(job_result);
+		System.out.println(place_result);
+		System.out.println(URL_result);
 
 		// Test der gesamten Pipeline:
 		MyCrawler crawler = new MyCrawler();
@@ -141,10 +167,9 @@ public class SimpleServlet extends HttpServlet {
 
 		BasicNLP myNLP;
 		try {
-			myNLP = new BasicNLP();
+			myNLP = new BasicNLP(job_result);
 			myNLP.create_pos();
 			System.out.println("pos tags erfolgreich erstellt.");
-			
 
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block

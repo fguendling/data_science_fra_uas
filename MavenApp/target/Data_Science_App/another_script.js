@@ -19,7 +19,7 @@ $(document).ready(function() {
 		}
 
 		if (my_id == "Charts") {
-			$('#content').load("charts.html")
+			$('#content').load(awesome_chart_example())
 		}
 
 	});

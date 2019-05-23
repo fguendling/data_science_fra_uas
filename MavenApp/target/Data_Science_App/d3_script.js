@@ -1,6 +1,7 @@
 // dieses Beispiel verwendet v3 von d3.js und wurde entnommen von
 // http://bl.ocks.org/Jverma/887877fc5c2c2d99be10 
 
+function awesome_chart_example(){
 $(document).ready(
 		function() {
 			// set the dimensions of the canvas
@@ -31,16 +32,16 @@ $(document).ready(
 			d3.json("/MavenApp/SimpleServlet", function(error, data) {
 
 				data.forEach(function(d) {
-					d.Country = d.Country;
-					d.Value = +d.Value;
+					d.token = d.token;
+					d.token_count = +d.token_count;
 				});
 
 				// scale the range of the data
 				x.domain(data.map(function(d) {
-					return d.Country;
+					return d.token;
 				}));
 				y.domain([ 0, d3.max(data, function(d) {
-					return d.Value;
+					return d.token_count;
 				}) ]);
 
 				// add axis
@@ -52,16 +53,17 @@ $(document).ready(
 				svg.append("g").attr("class", "y axis").call(yAxis).append(
 						"text").attr("transform", "rotate(-90)").attr("y", 5)
 						.attr("dy", ".71em").style("text-anchor", "end").text(
-								"Frequency");
+								"token_count");
 
 				// Add bar chart
 				svg.selectAll("bar").data(data).enter().append("rect").attr(
 						"class", "bar").attr("x", function(d) {
-					return x(d.Country);
+					return x(d.token);
 				}).attr("width", x.rangeBand()).attr("y", function(d) {
-					return y(d.Value);
+					return y(d.token_count);
 				}).attr("height", function(d) {
-					return height - y(d.Value);
+					return height - y(d.token_count);
 				});
 			});
 		});
+};
