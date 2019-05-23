@@ -25,7 +25,6 @@ public class SimpleServlet extends HttpServlet {
 	static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
 	static final String DB_URL = "jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306";
 	static final String USER = "data_science";
-	// db password muss hier eingetragen werden.
 	static final String PASS = "data_science_pw";
 
 	String output;
@@ -37,69 +36,86 @@ public class SimpleServlet extends HttpServlet {
 		response.setContentType("text/plain");
 		PrintWriter out = response.getWriter();
 		System.out.println("doGet wird aufgerufen.");
-		MyStanfordNLP mySNLP = new MyStanfordNLP();
-		mySNLP.doNLP();
-	}
-
-	// Ausgabe in Frontend funktioniert nicht mehr auf diese Weise
-	// String title_of_indeed_search =
-	// crawler.crawl("https://de.indeed.com/Jobs?q=apex&l=Frankfurt+am+Main");
+//		MyStanfordNLP mySNLP = new MyStanfordNLP();
+//		mySNLP.doNLP();
 
 	// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
 	// an das Backend übergeben werden
 	// out.println(request.getParameter("Vorname"));
 	// out.println(request.getParameter("Nachname"));
 
-	// Das diente als Beispiel dafür, wie Daten aus der DB als JSON verpackt wurden.
-	// kann man spätere löschen.
 
-// Database connection...	
-//		Connection conn = null;
-//		Statement stmt = null;
-//		try {
-//			Class.forName("org.mariadb.jdbc.Driver");
-//			conn = DriverManager.getConnection("jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306",
-//					USER, PASS);
-//			Statement select = conn.createStatement();
-//			ResultSet result = select.executeQuery("SELECT * from test.country_values;");
-//			String jsonString = "[";
-//			while (result.next()) {
-//				o1.put("Country", result.getString(1));
-//				o1.put("Value", result.getString(2));
-//				jsonString = jsonString + o1.toString() + ',';
-//
-//			}
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306",
+					USER, PASS);
+			Statement select = conn.createStatement();
+			ResultSet result = select.executeQuery(
+					"-- actual query for the app\n" + 
+					"\n" + 
+					"SELECT CONCAT(\n" + 
+					"    '[', \n" + 
+					"    GROUP_CONCAT(json_object('token', token, 'token_count', token_count)),\n" + 
+					"    ']'\n" + 
+					") FROM (\n" + 
+					"select token, pos, count(token) token_count from (\n" + 
+					"select \n" + 
+					"	a.ausschreibungs_id id, \n" + 
+					"    a.ausschreibungs_inhalt, \n" + 
+					"    a.ausschreibungs_titel, \n" + 
+					"    a.datum, firma, \n" + 
+					"    a.suchbegriff_job, \n" + 
+					"    a.suchbegriff_ort, \n" + 
+					"    a.webseite,\n" + 
+					"    pos.ausschreibungs_inhalt_pos_id, \n" + 
+					"    pos.ausschreibungs_id, \n" + 
+					"    pos.token, \n" + 
+					"    pos.pos\n" + 
+					"from test.Ausschreibungen a\n" + 
+					"inner join test.Ausschreibungs_Inhalt_POS pos\n" + 
+					"on a.ausschreibungs_id=pos.ausschreibungs_id\n" + 
+					"where a.suchbegriff_job = \"Data Scientist\"\n" + 
+					"-- viele Englische Wörter bekommen den pos 'NE' zugeordnet. \n" + 
+					"-- Diese werden hier nicht berücksichtigt.\n" + 
+					"-- Dadurch fehlen einige wichtige Begriffe, wie z. B. \"Python\" oder Science.\n" + 
+					"-- Das Problem könnte man lösen, wenn ein Language Detector eingebaut wird.\n" + 
+					"and pos.pos in ('NN')) results group by results.token order by token_count desc limit 10) limited_results;\n" + 
+					"\n" 
+					
+					);
+			String jsonString = "";
+			while (result.next()) {
+				jsonString = result.getString(1);
+				}
 
-	// hier können die JSON Daten ausgegeben werden
-	// die werden auch für die Erstellung des Charts benötigt.
-	// out.println(jsonString.substring(0, jsonString.length() - 1) + ']');
+		// output des json
+		out.println(jsonString);
 
-	// es wurde das gecrawlte html ausgegeben.
-	// out.println(title_of_indeed_search);
-
-//		} catch (SQLException se) {
-//			// Handle errors for JDBC
-//			se.printStackTrace();
-//		} catch (Exception e) {
-//			// Handle errors for Class.forName
-//			e.printStackTrace();
-//		} finally {
-//			// finally block used to close resources
-//			try {
-//				if (stmt != null) {
-//					conn.close();
-//				}
-//			} catch (SQLException se) {
-//			} // do nothing
-//			try {
-//				if (conn != null) {
-//					conn.close();
-//				}
-//			} catch (SQLException se) {
-//				se.printStackTrace();
-//			} // end finally try
-//		} // end try
-//	}// end main
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			se.printStackTrace();
+		} catch (Exception e) {
+			// Handle errors for Class.forName
+			e.printStackTrace();
+		} finally {
+			// finally block used to close resources
+			try {
+				if (stmt != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+			} // do nothing
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				se.printStackTrace();
+			} // end finally try
+		} // end try
+	}// end main
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -127,6 +143,8 @@ public class SimpleServlet extends HttpServlet {
 		try {
 			myNLP = new BasicNLP();
 			myNLP.create_pos();
+			System.out.println("pos tags erfolgreich erstellt.");
+			
 
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
