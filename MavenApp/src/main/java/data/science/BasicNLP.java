@@ -55,11 +55,12 @@ public class BasicNLP {
 		conn = DriverManager.getConnection("jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306",
 				USER, PASS);
 		Statement select = conn.createStatement();
-		// hier fehlt ein where, da man nicht nochmal alles verarbeiten möchte.
-		// dadurch sind die Daten jetzt inkonsistent.
-
+		
 		String query = "select ausschreibungs_id, ausschreibungs_inhalt from test.Ausschreibungen"
-				+ " where suchbegriff_job=?;";
+				+ " where suchbegriff_job=?"
+				+ "and datum = (select max(datum) from test.Ausschreibungen)" 
+				+ ";";
+
 		PreparedStatement my_select = conn.prepareStatement(query);
 		my_select.setString(1, this.jobresult);
 		rs = my_select.executeQuery();

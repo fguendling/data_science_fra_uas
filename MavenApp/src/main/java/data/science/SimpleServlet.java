@@ -27,7 +27,7 @@ public class SimpleServlet extends HttpServlet {
 	static final String USER = "data_science";
 	static final String PASS = "data_science_pw";
 
-	String output;
+//	String output;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -35,15 +35,12 @@ public class SimpleServlet extends HttpServlet {
 
 		response.setContentType("text/plain");
 		PrintWriter out = response.getWriter();
-		System.out.println("doGet wird aufgerufen.");
-//		MyStanfordNLP mySNLP = new MyStanfordNLP();
-//		mySNLP.doNLP();
+		System.out.println("get methode wird aufgerufen.");
 
-	// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
-	// an das Backend übergeben werden
-	// out.println(request.getParameter("Vorname"));
-	// out.println(request.getParameter("Nachname"));
-
+		// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
+		// an das Backend übergeben werden
+		// out.println(request.getParameter("Vorname"));
+		// out.println(request.getParameter("Nachname"));
 
 		Connection conn = null;
 		Statement stmt = null;
@@ -85,12 +82,7 @@ public class SimpleServlet extends HttpServlet {
 					"\n" 
 					//^im Prinzip für Aufgabe 1 & 2 relevant
 					
-					);
-//			String jsonString = "";
-//			while (result.next()) {
-//				jsonString = result.getString(1);
-//				}
-	
+					);	
 		
 			result = select.executeQuery(
 					"SELECT CONCAT(\n" + 
@@ -165,6 +157,20 @@ public class SimpleServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
+//test des stanford parsers
+//		MyStanfordNLP mySNLP;
+//		try {
+//			mySNLP = new MyStanfordNLP(job_result);
+//			mySNLP.doNLP(job_result);
+//			System.out.println("Parser hat erfolgreich geparsed.");
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
 		BasicNLP myNLP;
 		try {
 			myNLP = new BasicNLP(job_result);
@@ -178,7 +184,6 @@ public class SimpleServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
