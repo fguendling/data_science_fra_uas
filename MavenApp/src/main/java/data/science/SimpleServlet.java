@@ -27,8 +27,6 @@ public class SimpleServlet extends HttpServlet {
 	static final String USER = "data_science";
 	static final String PASS = "data_science_pw";
 
-//	String output;
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -42,6 +40,10 @@ public class SimpleServlet extends HttpServlet {
 		// out.println(request.getParameter("Vorname"));
 		// out.println(request.getParameter("Nachname"));
 
+		// ^ Parameter müssen gesetzt werden beim Klick auf die Balken des Charts.
+		// Dann kann per if geprüft werden ob die Parameter gesetzt sind. - oder anders
+		// anschließend kann das korrekte SQL aufgerufen und zurückgegeben werden (aufgabe2_details.sql)		
+		
 		Connection conn = null;
 		Statement stmt = null;
 		try {
@@ -81,6 +83,7 @@ public class SimpleServlet extends HttpServlet {
 					"and pos.pos in ('NN')) results group by results.token order by token_count desc limit 10) limited_results;\n" + 
 					"\n" 
 					//^im Prinzip für Aufgabe 1 & 2 relevant
+					// alter versuch. (vor 29-May-2019.)
 					
 					);	
 		
@@ -96,14 +99,18 @@ public class SimpleServlet extends HttpServlet {
 					"inner join test.programming_languages pl\n" + 
 					"on a.ausschreibungs_id = pos.ausschreibungs_id\n" + 
 					"and pos.token=pl.name\n" + 
-					"where a.suchbegriff_job = 'Data Scientist'\n" + 
+					"where a.suchbegriff_job = 'Softwareentwickler'\n" + 
+					"and pos.token != 'es'\n" +
+					"and pos.token != 'code'\n" +
+					"and pos.token != 't'\n" +
+					"and pos.token != 'e'\n" +
+					"and pos.token != 'plus'\n" +
 					"group by pos.token\n" + 
 					"order by count desc\n" + 
 					"limit 10) json_results\n" + 
 					";"					);
-			// ^das Beispiel gibt die Top Programmiersprachen aus (! für Data Scientists).
-			// kann man anpassen an "Softwareentwickler" 
-			// und man hat die Lösung für Aufgabenstellung 3
+			// ^das Beispiel gibt die Top Programmiersprachen aus 
+
 			String jsonString = "";
 			while (result.next()) {
 				jsonString = result.getString(1);

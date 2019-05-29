@@ -1,15 +1,11 @@
--- Aufgabe 2
--- verwendet analytic function (lag), um vorgänger der tokens zu ermitteln.
+-- experience_details
+-- basiert auf Query 'Aufgabe 2'
 
-SELECT CONCAT(
-    '[', 
-    GROUP_CONCAT(json_object('jahre', vorgaenger, 'count', erfahrungs_count)),
-    ']'
-) FROM (
 select 	
-	count(p.ausschreibungs_id) erfahrungs_count,
+	p.ausschreibungs_id,
     p.token vorgaenger, 
-    a.token nachfolger
+    a.token nachfolger,
+    au.ausschreibungs_inhalt
     -- p.pos, p.ausschreibungs_id
     -- au.ausschreibungs_inhalt 
 from (
@@ -27,7 +23,14 @@ on a.ausschreibungs_id = au.ausschreibungs_id
 where p.pos = 'card'
 and a.token like 'jahre'
 and au.suchbegriff_job = 'Projektmanager'
--- das group by und den erfahrungs_count muss man entfernen, um die detaillierten Daten zu erhalten.
-group by vorgaenger
-order by erfahrungs_count desc, p.ausschreibungs_id) json_results
+
+-- der parameter '5' muss aus dem Chart extrahiert und ans Backend übergeben werden.
+and p.token = '5'
+order by p.ausschreibungs_id
 ;
+-- Danach kann das Ergebnis in einem neuen Window ausgegeben werden.
+-- Query läuft in max 4 Sekunden, was auch ok ist.
+
+
+
+

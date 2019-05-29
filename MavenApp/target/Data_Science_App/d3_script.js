@@ -29,8 +29,10 @@ $(document).ready(
 					"translate(" + margin.left + "," + margin.top + ")");
 
 			// load the data
-			d3.json("/MavenApp/SimpleServlet", function(error, data) {
-
+			// das mit dem Servlet geht auch.
+			// d3.json("/MavenApp/SimpleServlet", function(error, data) {
+			d3.json("test.json", function(error, data) {
+				
 				data.forEach(function(d) {
 					d.token = d.token;
 					d.token_count = +d.token_count;
