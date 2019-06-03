@@ -25,8 +25,13 @@ $(document).ready(function() {
 
 		if (my_id == "Charts2") {
 			$('#content').html('<div></div>');
-			$('#content').load(onclick_example());
-			
+			$('#content').on('load', onclick_example());
+			if ($('svg').is(':visible')){
+				drill_down();
+			}
+				else {
+					setTimeout(drill_down, 1000);
+				}					
 		}
 	});
 

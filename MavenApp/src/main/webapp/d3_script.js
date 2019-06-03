@@ -103,7 +103,7 @@ function onclick_example(){
 				// load the data
 				// das mit dem Servlet geht auch.
 				// d3.json("/MavenApp/SimpleServlet", function(error, data) {
-				d3.json("experiences.json", function(error, data) {
+				d3.json("Aufgabe2.json", function(error, data) {
 
 					data.forEach(function(d) {
 						d.jahre = d.jahre;

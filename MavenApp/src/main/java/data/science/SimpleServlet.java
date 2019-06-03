@@ -35,10 +35,9 @@ public class SimpleServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		System.out.println("get methode wird aufgerufen.");
 		
-		MyStanfordNLP NLP_test = new MyStanfordNLP();
-		NLP_test.testNLP();
-		System.out.println("NLP test wurde aufgerufen.");
-		
+//		MyStanfordNLP NLP_test = new MyStanfordNLP();
+//		NLP_test.testNLP();
+//		System.out.println("NLP test wurde aufgerufen.");
 		
 		// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
 		// an das Backend übergeben werden
@@ -176,10 +175,8 @@ public class SimpleServlet extends HttpServlet {
 //			mySNLP.doNLP(job_result);
 //			System.out.println("Parser hat erfolgreich geparsed.");
 //		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 
@@ -188,14 +185,11 @@ public class SimpleServlet extends HttpServlet {
 			myNLP = new BasicNLP(job_result);
 			myNLP.create_pos();
 			System.out.println("pos tags erfolgreich erstellt.");
-
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 	
 	}
 
 	@Override
