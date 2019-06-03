@@ -1,5 +1,7 @@
 -- Aufgabe 2
 -- verwendet analytic function (lag), um vorgänger der tokens zu ermitteln.
+-- Hier zusätzlich noch die am Häufigsten verwendeten Nomen
+
 
 SELECT CONCAT(
     '[', 

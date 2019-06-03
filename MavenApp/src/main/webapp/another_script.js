@@ -31,6 +31,7 @@ $(document).ready(function() {
 	});
 
 	myPost = function() {
+		// Auslösen von Crawler und NLP
 		var jobVal = document.CrawlerAndNLP_Form.job.value;
 		var placeVal = document.CrawlerAndNLP_Form.place.value;
 		var URLVal = document.CrawlerAndNLP_Form.url.value;

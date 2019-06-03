@@ -19,12 +19,19 @@ $(document).ready(function() {
 		}
 
 		if (my_id == "Charts") {
-			$('#content').load(awesome_chart_example())
+			$('#content').html('<div></div>');
+			$('#content').load(awesome_chart_example());
 		}
 
+		if (my_id == "Charts2") {
+			$('#content').html('<div></div>');
+			$('#content').load(onclick_example());
+			
+		}
 	});
 
 	myPost = function() {
+		// Auslösen von Crawler und NLP
 		var jobVal = document.CrawlerAndNLP_Form.job.value;
 		var placeVal = document.CrawlerAndNLP_Form.place.value;
 		var URLVal = document.CrawlerAndNLP_Form.url.value;

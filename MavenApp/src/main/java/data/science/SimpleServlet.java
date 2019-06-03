@@ -34,7 +34,12 @@ public class SimpleServlet extends HttpServlet {
 		response.setContentType("text/plain");
 		PrintWriter out = response.getWriter();
 		System.out.println("get methode wird aufgerufen.");
-
+		
+		MyStanfordNLP NLP_test = new MyStanfordNLP();
+		NLP_test.testNLP();
+		System.out.println("NLP test wurde aufgerufen.");
+		
+		
 		// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
 		// an das Backend übergeben werden
 		// out.println(request.getParameter("Vorname"));

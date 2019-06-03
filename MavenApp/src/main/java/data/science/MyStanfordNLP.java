@@ -30,6 +30,41 @@ public class MyStanfordNLP {
 	CoreDocument document;
 	StanfordCoreNLP pipeline;
 
+	// this is another constructor which is used for testing purpose only
+	// aka Overloading
+	MyStanfordNLP() {
+		// ignore all the database stuff and
+		// set up pipeline properties
+		Properties props = new Properties();
+		// set the list of annotators to run
+		props.setProperty("annotators", "tokenize,ssplit,pos,parse,depparse");
+		pipeline = new StanfordCoreNLP(props);
+
+	}
+
+	// test method
+	void testNLP() {
+		// create a document object
+
+		text = "Als Mitarbeiter bei der DB Systel gestaltest Du aktiv die Digitalisierung im Konzern und formst entscheidend die digitale Zukunft der Bahn mit.";
+
+		document = new CoreDocument(text);
+		// annnotate the document
+		pipeline.annotate(document);
+
+		// select the sentence
+		CoreSentence sentence = document.sentences().get(0);
+
+		// list of the part-of-speech tags for the second sentence
+		List<String> posTags = sentence.posTags();
+
+		// dependency parse for the second sentence
+		SemanticGraph dependencyParse = sentence.dependencyParse();
+		System.out.println(dependencyParse);
+		// hier können jetzt die diversen methoden aus der javadoc ausprobiert werden:
+		// https://nlp.stanford.edu/nlp/javadoc/javanlp/edu/stanford/nlp/semgraph/SemanticGraph.html
+	}
+
 	MyStanfordNLP(String jobresult) throws ClassNotFoundException, SQLException {
 		this.jobresult = jobresult;
 		// Database connection...
@@ -52,8 +87,7 @@ public class MyStanfordNLP {
 		Properties props = new Properties();
 		// set the list of annotators to run
 		props.setProperty("annotators", "tokenize,ssplit,pos,parse,depparse");
-	    pipeline = new StanfordCoreNLP(props);
-
+		pipeline = new StanfordCoreNLP(props);
 
 	}
 
