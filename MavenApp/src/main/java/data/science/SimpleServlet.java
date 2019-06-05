@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,8 +21,7 @@ import org.json.*;
 public class SimpleServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	JSONObject o1 = new JSONObject();
-	ArrayList<JSONObject> json_object_array = new ArrayList<JSONObject>();
+
 	static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
 	static final String DB_URL = "jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306";
 	static final String USER = "data_science";
@@ -31,6 +31,11 @@ public class SimpleServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// Beispiel:
+		// Auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc) an das Backend übergeben werden
+		// out.println(request.getParameter("Vorname"));
+		// out.println(request.getParameter("Nachname"));
+		
 		response.setContentType("text/plain");
 		PrintWriter out = response.getWriter();
 		System.out.println("get methode wird aufgerufen.");
@@ -39,89 +44,92 @@ public class SimpleServlet extends HttpServlet {
 //		NLP_test.testNLP();
 //		System.out.println("NLP test wurde aufgerufen.");
 		
-		// test, auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc)
-		// an das Backend übergeben werden
-		// out.println(request.getParameter("Vorname"));
-		// out.println(request.getParameter("Nachname"));
-
-		// ^ Parameter müssen gesetzt werden beim Klick auf die Balken des Charts.
-		// Dann kann per if geprüft werden ob die Parameter gesetzt sind. - oder anders
-		// anschließend kann das korrekte SQL aufgerufen und zurückgegeben werden (aufgabe2_details.sql)		
+		Connection my_conn = null;
 		
-		Connection conn = null;
-		Statement stmt = null;
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306",
+			my_conn = DriverManager.getConnection("jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306",
 					USER, PASS);
-			Statement select = conn.createStatement();
-			ResultSet result = select.executeQuery(
-					"-- actual query for the app\n" + 
-					"\n" + 
-					"SELECT CONCAT(\n" + 
-					"    '[', \n" + 
-					"    GROUP_CONCAT(json_object('token', token, 'token_count', token_count)),\n" + 
-					"    ']'\n" + 
-					") FROM (\n" + 
-					"select token, pos, count(token) token_count from (\n" + 
-					"select \n" + 
-					"	a.ausschreibungs_id id, \n" + 
-					"    a.ausschreibungs_inhalt, \n" + 
-					"    a.ausschreibungs_titel, \n" + 
-					"    a.datum, firma, \n" + 
-					"    a.suchbegriff_job, \n" + 
-					"    a.suchbegriff_ort, \n" + 
-					"    a.webseite,\n" + 
-					"    pos.ausschreibungs_inhalt_pos_id, \n" + 
-					"    pos.ausschreibungs_id, \n" + 
-					"    pos.token, \n" + 
-					"    pos.pos\n" + 
-					"from test.Ausschreibungen a\n" + 
-					"inner join test.Ausschreibungs_Inhalt_POS pos\n" + 
-					"on a.ausschreibungs_id=pos.ausschreibungs_id\n" + 
-					"where a.suchbegriff_job = \"Data Scientist\"\n" + 
-					"-- viele Englische Wörter bekommen den pos 'NE' zugeordnet. \n" + 
-					"-- Diese werden hier nicht berücksichtigt.\n" + 
-					"-- Dadurch fehlen einige wichtige Begriffe, wie z. B. \"Python\" oder Science.\n" + 
-					"-- Das Problem könnte man lösen, wenn ein Language Detector eingebaut wird.\n" + 
-					"and pos.pos in ('NN')) results group by results.token order by token_count desc limit 10) limited_results;\n" + 
-					"\n" 
-					//^im Prinzip für Aufgabe 1 & 2 relevant
-					// alter versuch. (vor 29-May-2019.)
-					
-					);	
 		
-			result = select.executeQuery(
-					"SELECT CONCAT(\n" + 
-					"    '[', \n" + 
-					"    GROUP_CONCAT(json_object('token', pl_name, 'token_count', count)),\n" + 
-					"    ']'\n" + 
-					") FROM (\n" + 
-					"select count(pos.token) count, pl.name pl_name\n" + 
-					"from test.Ausschreibungs_Inhalt_POS pos\n" + 
-					"inner join test.Ausschreibungen a\n" + 
-					"inner join test.programming_languages pl\n" + 
-					"on a.ausschreibungs_id = pos.ausschreibungs_id\n" + 
-					"and pos.token=pl.name\n" + 
-					"where a.suchbegriff_job = 'Softwareentwickler'\n" + 
-					"and pos.token != 'es'\n" +
-					"and pos.token != 'code'\n" +
-					"and pos.token != 't'\n" +
-					"and pos.token != 'e'\n" +
-					"and pos.token != 'plus'\n" +
-					"group by pos.token\n" + 
-					"order by count desc\n" + 
-					"limit 10) json_results\n" + 
-					";"					);
-			// ^das Beispiel gibt die Top Programmiersprachen aus 
+		// es wird geprüft ob parameter übergeben werden in der url
+		// die parameter werden im drill_down.js festgelegt.
+		if (request.getParameter("condition") != null) {
+			String cond = request.getParameter("condition");
+			out.println(request.getParameter("condition") + "\r\n");
+						
+			String result_of_query = "";
+						
+			PreparedStatement preparedStmt = my_conn.prepareStatement(
 
-			String jsonString = "";
-			while (result.next()) {
-				jsonString = result.getString(1);
-				}
+					"-- experience_details\n" + 
+					"-- basiert auf Query 'Aufgabe 2'\n" + 
+					"\n" + 
+					"select 	\n" + 
+					"	p.ausschreibungs_id,\n" + 
+					"    p.token vorgaenger, \n" + 
+					"    a.token nachfolger,\n" + 
+					"    au.ausschreibungs_inhalt\n" + 
+					"from (\n" + 
+					"	select \n" + 
+					"		ausschreibungs_id, \n" + 
+					"        token, \n" + 
+					"        pos, \n" + 
+					"        ausschreibungs_inhalt_pos_id, \n" + 
+					"        lag(ausschreibungs_inhalt_pos_id) over (order by ausschreibungs_inhalt_pos_id) as predecessor_token\n" + 
+					"	from test.Ausschreibungs_Inhalt_POS) a\n" + 
+					"inner join test.Ausschreibungs_Inhalt_POS p \n" + 
+					"on a.predecessor_token = p.ausschreibungs_inhalt_pos_id\n" + 
+					"inner join test.Ausschreibungen au\n" + 
+					"on a.ausschreibungs_id = au.ausschreibungs_id\n" + 
+					"where p.pos = 'card'\n" + 
+					"and a.token like 'jahre'\n" + 
+					"and au.suchbegriff_job = 'Projektmanager'\n" + 
+					"\n" + 
+					"and p.token = ?\n" + 
+					"order by p.ausschreibungs_id;\n" + 
+					""
+					
+					);
+			preparedStmt.setString(1, cond);
+			
+			ResultSet rs = preparedStmt.executeQuery();
+			while (rs.next()) {
+				result_of_query = result_of_query + rs.getString("ausschreibungs_inhalt") + "\r\n" + "\r\n";		
+			}
+			out.println(result_of_query);
+		}
+		
 
-			out.println(jsonString);
-
+// 					alter versuch. (vor 29-May-2019.). War gedacht für Aufgaben 1 und 2/
+//					"SELECT CONCAT(\n" + 
+//					"    '[', \n" + 
+//					"    GROUP_CONCAT(json_object('token', token, 'token_count', token_count)),\n" + 
+//					"    ']'\n" + 
+//					") FROM (\n" + 
+//					"select token, pos, count(token) token_count from (\n" + 
+//					"select \n" + 
+//					"	a.ausschreibungs_id id, \n" + 
+//					"    a.ausschreibungs_inhalt, \n" + 
+//					"    a.ausschreibungs_titel, \n" + 
+//					"    a.datum, firma, \n" + 
+//					"    a.suchbegriff_job, \n" + 
+//					"    a.suchbegriff_ort, \n" + 
+//					"    a.webseite,\n" + 
+//					"    pos.ausschreibungs_inhalt_pos_id, \n" + 
+//					"    pos.ausschreibungs_id, \n" + 
+//					"    pos.token, \n" + 
+//					"    pos.pos\n" + 
+//					"from test.Ausschreibungen a\n" + 
+//					"inner join test.Ausschreibungs_Inhalt_POS pos\n" + 
+//					"on a.ausschreibungs_id=pos.ausschreibungs_id\n" + 
+//					"where a.suchbegriff_job = \"Data Scientist\"\n" + 
+//					"-- viele Englische Wörter bekommen den pos 'NE' zugeordnet. \n" + 
+//					"-- Diese werden hier nicht berücksichtigt.\n" + 
+//					"-- Dadurch fehlen einige wichtige Begriffe, wie z. B. \"Python\" oder Science.\n" + 
+//					"-- Das Problem könnte man lösen, wenn ein Language Detector eingebaut wird.\n" + 
+//					"and pos.pos in ('NN')) results group by results.token order by token_count desc limit 10) limited_results;\n" + 
+//					"\n" 			
+		
 		} catch (SQLException se) {
 			// Handle errors for JDBC
 			se.printStackTrace();
@@ -131,14 +139,8 @@ public class SimpleServlet extends HttpServlet {
 		} finally {
 			// finally block used to close resources
 			try {
-				if (stmt != null) {
-					conn.close();
-				}
-			} catch (SQLException se) {
-			} // do nothing
-			try {
-				if (conn != null) {
-					conn.close();
+				if (my_conn != null) {
+					my_conn.close();
 				}
 			} catch (SQLException se) {
 				se.printStackTrace();

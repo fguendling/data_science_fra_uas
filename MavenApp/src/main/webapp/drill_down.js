@@ -14,7 +14,13 @@ for (i = 0; i < document.querySelectorAll('rect.bar').length; i++) {
 // get index of bar 
 $('rect.bar').on("click", function(){
 // get values of axis
-console.log($("g.x.axis").children()[Number(this.innerHTML)].children[1].innerHTML)
+//var param = ($("g.x.axis").children()[Number(this.innerHTML)].children[1].innerHTML);
+var param = ($("g.x.axis").children()[(this.innerHTML)].children[1].innerHTML);
+window.open("http://localhost:8080/MavenApp/SimpleServlet?condition=" + param, 
+				"Awesome Drill Down",	
+				"width=300,height=400,left=100,top=200" );
+
+	// warum lädt das window nicht richtig?
 });
 });
 };

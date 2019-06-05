@@ -26,12 +26,10 @@ $(document).ready(function() {
 		if (my_id == "Charts2") {
 			$('#content').html('<div></div>');
 			$('#content').on('load', onclick_example());
-			alert('came to this place');
 			if ($('svg').is(':visible')){
 				drill_down();
 			}
 				else {
-					alert('good');
 					setTimeout(drill_down, 1000);
 				}					
 		}

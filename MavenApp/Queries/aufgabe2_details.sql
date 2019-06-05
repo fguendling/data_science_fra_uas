@@ -6,8 +6,6 @@ select
     p.token vorgaenger, 
     a.token nachfolger,
     au.ausschreibungs_inhalt
-    -- p.pos, p.ausschreibungs_id
-    -- au.ausschreibungs_inhalt 
 from (
 	select 
 		ausschreibungs_id, 
@@ -24,13 +22,5 @@ where p.pos = 'card'
 and a.token like 'jahre'
 and au.suchbegriff_job = 'Projektmanager'
 
--- der parameter '5' muss aus dem Chart extrahiert und ans Backend übergeben werden.
-and p.token = '5'
-order by p.ausschreibungs_id
-;
--- Danach kann das Ergebnis in einem neuen Window ausgegeben werden.
--- Query läuft in max 4 Sekunden, was auch ok ist.
-
-
-
-
+and p.token = ?
+order by p.ausschreibungs_id;

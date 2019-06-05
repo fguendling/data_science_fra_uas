@@ -3,7 +3,7 @@ use test;
 -- delete 
 SET SQL_SAFE_UPDATES = 0;
 delete from test.Ausschreibungen
-where suchbegriff_job = "Softwareentwickler";
+where suchbegriff_ort = "Berlin";
 delete from test.Ausschreibungs_Inhalt_POS;
 
 -- select * und select count
