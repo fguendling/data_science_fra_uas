@@ -18,8 +18,8 @@ $(document).ready(function() {
 		}
 
 		if (my_id == "Charts") {
-			$('#content').html('<div></div>');
-			$('#content').load(awesome_chart_example());
+			$('#content').html('<svg id="my_dataviz" width="440" height="300"></svg>');
+			$('#content').load(bubblemap());
 		}
 
 		if (my_id == "Charts2") {

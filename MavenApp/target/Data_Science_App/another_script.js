@@ -19,7 +19,7 @@ $(document).ready(function() {
 
 		if (my_id == "Charts") {
 			$('#content').html('<div></div>');
-			$('#content').load(awesome_chart_example());
+			$('#content').load(bubblemap());
 		}
 
 		if (my_id == "Charts2") {
@@ -33,8 +33,8 @@ $(document).ready(function() {
 		}
 		
 		if (my_id == "Charts3") {
-			$('#content').html("sunburst.html");		
-			$('content').load(chart3());
+			$('#content').load('sunburst.html');		
+			$('#content').load(setTimeout(chart3, 100));
 		}
 	});
 
