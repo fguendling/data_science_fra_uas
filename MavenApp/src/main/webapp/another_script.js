@@ -6,7 +6,6 @@ $(document).ready(function() {
 		$(this).addClass('active');
 	});
 
-	// test
 	$('.topnav a').on('click', function() {
 		my_id = this.id;
 
@@ -26,12 +25,16 @@ $(document).ready(function() {
 		if (my_id == "Charts2") {
 			$('#content').html('<div></div>');
 			$('#content').on('load', onclick_example());
-			if ($('svg').is(':visible')){
+			if ($('svg').is(':visible')) {
 				drill_down();
+			} else {
+				setTimeout(drill_down, 1000);
 			}
-				else {
-					setTimeout(drill_down, 1000);
-				}					
+		}
+		
+		if (my_id == "Charts3") {
+			$('#content').load('sunburst.html');		
+			$('#content').load(setTimeout(chart3, 100));
 		}
 	});
 
@@ -44,12 +47,11 @@ $(document).ready(function() {
 		$.ajax({
 			url : 'SimpleServlet',
 			type : 'post',
-			data:{
-			       job: jobVal,
-			       place: placeVal,
-			       url: URLVal
-			    },			
-//			data: "job="+jobVal+"&place="+placeVal+"&url="+URLVal,			
+			data : {
+				job : jobVal,
+				place : placeVal,
+				url : URLVal
+			},
 			success : function(data) {
 				console.log(data);
 			}

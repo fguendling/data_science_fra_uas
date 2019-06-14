@@ -20,7 +20,6 @@ window.open("http://localhost:8080/MavenApp/SimpleServlet?condition=" + param,
 				"Awesome Drill Down",	
 				"width=300,height=400,left=100,top=200" );
 
-	// warum lädt das window nicht richtig?
 });
 });
 };
