@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+  <title>Bubble Map</title>
+<!-- Load d3.js and the geo projection plugin -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body onpageshow="draw_bubble_map()">
+        <!-- Create an element where the map will take place -->
+        <!--<div id="d3_wrapper">
+                <svg class="my_dataviz">
+                    <g></g>
+                </svg>
+        </div>-->
+        <div id="d3_wrapper">
+                <div id="my_dataviz">
+                    <g></g>
+                </div>
+                <svg class="chart">
+                        <g></g>
+                </svg>
+        </div>
+        
+</body>
+
+
+<!--<svg id="my_dataviz" width="600" height="600"></svg>-->
+<script src="Bubble_Map.js"></script>
