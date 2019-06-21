@@ -1,0 +1,108 @@
+{
+    "TotalValue": 25938000000.0,
+    "children": [
+        {
+            "SubtotalValue": 1193148000.0,
+            "children": [
+                {
+                    "name": "Latin America",
+                    "value": 544698000.0
+                },
+                {
+                    "name": "AMEA",
+                    "value": 544698000.0
+                },
+                {
+                    "name": "Europe",
+                    "value": 103752000.0
+                }
+            ],
+            "name": "Beverages"
+        },
+        {
+            "SubtotalValue": 11179278000.0,
+            "children": [
+                {
+                    "name": "Latin America",
+                    "value": 726263999.9999999
+                },
+                {
+                    "name": "AMEA",
+                    "value": 1711908000.0
+                },
+                {
+                    "name": "Europe",
+                    "value": 3138498000.0
+                },
+                {
+                    "name": "North America",
+                    "value": 5602608000.000001
+                }
+            ],
+            "name": "Biscuits"
+        },
+        {
+            "SubtotalValue": 1919412000.0,
+            "children": [
+                {
+                    "name": "Latin America",
+                    "value": 337194000.0
+                },
+                {
+                    "name": "AMEA",
+                    "value": 492822000.0
+                },
+                {
+                    "name": "Europe",
+                    "value": 1089396000.0
+                }
+            ],
+            "name": "Cheese & Grocery"
+        },
+        {
+            "SubtotalValue": 8170470000.0,
+            "children": [
+                {
+                    "name": "Latin America",
+                    "value": 752202000.0
+                },
+                {
+                    "name": "AMEA",
+                    "value": 2075040000.0
+                },
+                {
+                    "name": "Europe",
+                    "value": 5083848000.0
+                },
+                {
+                    "name": "North America",
+                    "value": 259380000.0
+                }
+            ],
+            "name": "Chocolate"
+        },
+        {
+            "SubtotalValue": 3475692000.0,
+            "children": [
+                {
+                    "name": "Latin America",
+                    "value": 855954000.0
+                },
+                {
+                    "name": "AMEA",
+                    "value": 881892000.0000001
+                },
+                {
+                    "name": "Europe",
+                    "value": 726263999.9999999
+                },
+                {
+                    "name": "North America",
+                    "value": 1011582000.0
+                }
+            ],
+            "name": "Gum & Candy"
+        }
+    ],
+    "name": "TotalValue"
+}
