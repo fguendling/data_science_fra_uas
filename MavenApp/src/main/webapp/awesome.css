@@ -94,3 +94,8 @@ body {
   stroke-width: 1px;
   shape-rendering: geometricPrecision;
 }
+
+.circle:hover{
+  stroke: black;
+  stroke-width: 4px;
+}

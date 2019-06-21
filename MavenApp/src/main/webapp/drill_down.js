@@ -1,8 +1,12 @@
 // der code muss laufen, nachdem das Chart geladen wurden
 
 function drill_down() {
+	console.log('actually called drill down');
+
 	$(document).ready(
 			function() {
+
+				console.log('should open the window');
 
 // set index for bars
 var list = document.querySelectorAll('rect.bar');
@@ -13,8 +17,10 @@ for (i = 0; i < document.querySelectorAll('rect.bar').length; i++) {
 
 // get index of bar 
 $('rect.bar').on("click", function(){
-// get values of axis
-//var param = ($("g.x.axis").children()[Number(this.innerHTML)].children[1].innerHTML);
+	// get values of axis
+	
+// kaputt, und ich weiß nicht warum
+	
 var param = ($("g.x.axis").children()[(this.innerHTML)].children[1].innerHTML);
 window.open("http://localhost:8080/MavenApp/SimpleServlet?condition=" + param, 
 				"Awesome Drill Down",	

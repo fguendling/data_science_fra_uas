@@ -14,11 +14,12 @@ $(document).ready(function() {
 		}
 
 		if (my_id == "home") {
-			$('#content').html("<h1>Herzlich Willkommen</h1>")
+			$('#content').html("<h2>Herzlich Willkommen</h2>")
 		}
 
 		if (my_id == "Charts") {
-			$('#content').html('<svg id="my_dataviz" width="440" height="300"></svg>');
+			$('#content').html('<h2>Chart 1 - Anzahl der "Data Scientist" Jobs, pro Stadt</h2>');
+			$('#content').append('<div id="my_dataviz" width="600" height="600"></div>');
 			$('#content').load(bubblemap());
 		}
 
@@ -30,8 +31,7 @@ $(document).ready(function() {
 			} else {
 				setTimeout(drill_down, 1000);
 			}
-		}
-		
+		}		
 		if (my_id == "Charts3") {
 			$('#content').load('sunburst.html');		
 			$('#content').load(setTimeout(chart3, 100));
