@@ -24,11 +24,11 @@ var projection = d3.geoMercator()
 
 // Daten(Länge- und Breitegrad) für die Kreise bereitstellen
 var markers = [
-  {long: 11.581981, lat: 48.135125, name: "München", jobs: 90}, // München
-  {long: 9.182932, lat: 48.775846, name: "Stuttgart", jobs: 120}, // Stuttgart
-  {long: 8.6821267, lat: 50.1109221, name: "Frankfurt am Main", jobs: 280}, //  Frankfurt am Main
-  {long: 9.993682, lat: 53.551085, name: "Hamburg", jobs: 24}, // Hamburg
-  {long: 13.404954, lat: 52.520007, name: "Berlin", jobs: 55} // Berlin
+  {long: 11.581981, lat: 48.135125, name: 'München', jobs: 90}, // München
+  {long: 9.182932, lat: 48.775846, name: 'Stuttgart', jobs: 120}, // Stuttgart
+  {long: 8.6821267, lat: 50.1109221, name: 'Frankfurt am Main', jobs: 280}, //  Frankfurt am Main
+  {long: 9.993682, lat: 53.551085, name: 'Hamburg', jobs: 24}, // Hamburg
+  {long: 13.404954, lat: 52.520007, name: 'Berlin', jobs: 55} // Berlin
 ];
 
 // Load external data and boot
@@ -73,21 +73,16 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
     }
     var mousemove = function(d) {
       Tooltip
-            .html(d.name + "<br>" + "long: " + d.long + "<br>" + "lat: " + d.lat)
+            .html(d.name + "<br>" + "Data Scientist Jobs: " + d.jobs)
             .style("left", (d3.mouse(this)[0]+10) + "px")
             .style("top", (d3.mouse(this)[1]) + "px")
     }
     var mouseclick = function(d){
-        // draw_bubble_map([]);   Wahrscheinlich empty -> leer bei Bar Chart. Hier zeichnet nur neu
-        //setTimeout(function(){  nur nen Timer
           d3.select("#my_dataviz").selectAll("*").remove();
           d3.select("#my_dataviz").append("g");
-          // d3.selectAll("#my_dataviz");
-          draw_bar_chart(months);
-          //draw_bubble_replace();
-          draw_show_months_button();
-        //}, 1000);
-      
+          var Stadt_Wahl = d.name;
+          draw_bar_chart(months,Stadt_Wahl);
+          draw_show_months_button(months_new);
     }
     
     var mouseleave = function(d) {
@@ -120,103 +115,9 @@ function draw_show_months_button(){
   });
 }
 function draw_months_back(d){
-  //draw_bubble_replace([]);
-  //setTimeout(function(){
     d3.select(".#my_dataviz").selectAll("*").remove();
     draw_bubble_map();
-  //}, 1000);
 }
-
-function draw_bubble_replace(){
-// Size ?
-var width = 600
-var height = 600
-
-// The svg
-var svg = d3.select("#my_dataviz")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height)
-
-// Map and projection
-var projection = d3.geoMercator()
-    .center([4, 47])                // GPS of location to zoom on
-    .scale(1020)                       // This is like the zoom
-    .translate([ width/2, height/2 ])
-
-// Create data for circles:
-var markers = [
-  {long: 9.083, lat: 42.149, name: "Corsica"}, // corsica
-  {long: 7.26, lat: 43.71, name: "Nice"}, // nice
-  {long: 2.349, lat: 48.864, name: "Paris"}, // Paris
-  {long: -1.397, lat: 43.664, name: "Hossegor"}, // Hossegor
-  {long: 3.075, lat: 50.640, name: "Lille"}, // Lille
-  {long: -3.83, lat: 58, name: "Morlaix"}, // Morlaix
-];
-
-// Load external data and boot
-d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson", function(data){
-
-    // Filter data
-    data.features = data.features.filter( function(d){return d.properties.name=="France"} )
-
-    // Draw the map
-    svg.append("g")
-        .selectAll("path")
-        .data(data.features)
-        .enter()
-        .append("path")
-          .attr("fill", "#b8b8b8")
-          .attr("d", d3.geoPath()
-              .projection(projection)
-          )
-        .style("stroke", "black")
-        .style("opacity", .3)
-
-    // create a tooltip
-    var Tooltip = d3.select("#my_dataviz")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 1)
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px")
-
-    // Three function that change the tooltip when user hover / move / leave a cell
-    var mouseover = function(d) {
-      Tooltip.style("opacity", 1)
-    }
-    var mousemove = function(d) {
-      Tooltip
-        .html(d.name + "<br>" + "long: " + d.long + "<br>" + "lat: " + d.lat)
-        .style("left", (d3.mouse(this)[0]+10) + "px")
-        .style("top", (d3.mouse(this)[1]) + "px")
-    }
-    var mouseleave = function(d) {
-      Tooltip.style("opacity", 0)
-    }
-
-    // Add circles:
-    svg
-      .selectAll("myCircles")
-      .data(markers)
-      .enter()
-      .append("circle")
-        .attr("cx", function(d){ return projection([d.long, d.lat])[0] })
-        .attr("cy", function(d){ return projection([d.long, d.lat])[1] })
-        .attr("r", 14)
-        .attr("class", "circle")
-        .style("fill", "69b3a2")
-        .attr("stroke", "#69b3a2")
-        .attr("stroke-width", 3)
-        .attr("fill-opacity", .4)
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave)
-
-})}
 
 
 // Ab Hier import von Bar Chart Vorlage
@@ -232,11 +133,58 @@ var chart_container_height;
 var chart_width;
 var chart_height;
 
-var months = [{"Nomen": "gemeinsam mit", "Häufigkeit": 4},{"Nomen": "Weitere Informationen", "Häufigkeit": 3},{"Nomen": "gute Kenntnisse", "Häufigkeit": 3},{"Nomen": "männliche Form", "Häufigkeit": 3},{"Nomen": "interdisziplinären Teams", "Häufigkeit": 3},{"Nomen": "familiar with", "Häufigkeit": 2},{"Nomen": "eng mit", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2},{"Nomen": "agilen Teams", "Häufigkeit": 2}];
+var months_new = {
+  'Staedte': [
+    { 
+      'Stadt': "Stuttgart", 'Attribute': [
+          {"Nomen": "gemeinsam mit", "Häufigkeit": 4},{"Nomen": "Weitere Informationen", "Häufigkeit": 3},{"Nomen": "gute Kenntnisse", "Häufigkeit": 3}
+        ]
+    },
+    { 
+      'Stadt': "München", 'Attribute': [
+        {"Nomen": "männliche Form", "Häufigkeit": 3},{"Nomen": "interdisziplinären Teams", "Häufigkeit": 3},{"Nomen": "familiar with", "Häufigkeit": 2}
+      ]
+    },
+    {
+      'Stadt': "Frankfurt am Main", 'Attribute': [
+        {"Nomen": "eng mit", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
+      ]
+    },
+    {
+      'Stadt': "Hamburg", 'Attribute': [
+        {"Nomen": "agilen Teams", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
+      ]
+    },
+    {
+      'Stadt': "Berlin", 'Attribute': [
+        {"Nomen": "agilen Teams", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
+      ]
+    }
+  ]
+}
+var months_new2 = {
+  'Stuttgart': [
+          {"Nomen": "gemeinsam mit", "Häufigkeit": 4},{"Nomen": "Weitere Informationen", "Häufigkeit": 3},{"Nomen": "gute Kenntnisse", "Häufigkeit": 3}
+        ],
+  'München': [
+        {"Nomen": "männliche Form", "Häufigkeit": 3},{"Nomen": "interdisziplinären Teams", "Häufigkeit": 3},{"Nomen": "familiar with", "Häufigkeit": 2}
+      ],
+  'Frankfurt am Main': [
+        {"Nomen": "eng mit", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
+      ],
+  'Hamburg': [
+        {"Nomen": "agilen Teams", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
+      ],
+  'Berlin': [
+        {"Nomen": "agilen Teams", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
+      ]
+}
 
+var months = [{"Nomen": "gemeinsam mit", "Häufigkeit": 4},{"Nomen": "Weitere Informationen", "Häufigkeit": 3},{"Nomen": "gute Kenntnisse", "Häufigkeit": 3},{"Nomen": "männliche Form", "Häufigkeit": 3},{"Nomen": "interdisziplinären Teams", "Häufigkeit": 3},{"Nomen": "familiar with", "Häufigkeit": 2},{"Nomen": "eng mit", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2},{"Nomen": "agilen Teams", "Häufigkeit": 2}];
+//days.Städte = days.Städte.filter( function(d){return d.Stadt==Stadt_Wahl} )
 // Starting point of the script execution
-define_chart_dimensions();
-generate_random_months_data();
+//define_chart_dimensions();
+//generate_random_months_data();
 //draw_chart_of_months(months);
 
 //window.onresize = function (){
@@ -244,8 +192,14 @@ generate_random_months_data();
 //  draw_bar_chart(days);
 //}
 
-function draw_bar_chart(days){
+function draw_bar_chart(days,Stadt_Wahl){
+  
+  define_chart_dimensions();
+  generate_random_months_data();
+  //months_new2[Stadt_Wahl].Nomen;
+  //months_new2[Stadt_Wahl].Häufigkeit;
   var horizontal_scale = d3.scaleBand().domain(days.map(function(item){return item.Nomen})).rangeRound([10,chart_width]);
+  console.log(function(item){item.Nomen});
   var vertical_scale = d3.scaleLinear().domain([0,d3.max(days, function(item){return item.Häufigkeit})]).range([chart_height, 10]);
   var bar_width = chart_width / days.length - chart_width / days.length / 1.3;
   var bar_horizontal_margin = (chart_width / days.length - bar_width) / 1.5;
@@ -291,24 +245,12 @@ function define_chart_dimensions(){
   chart_width = chart_container_width - margin.right - margin.left;
   chart_height = chart_container_height - margin.top - margin.bottom;
 }
-// function for swap
-function month_selected(month){
-  draw_chart_of_months([]);
-  setTimeout(function(){
-    d3.selectAll(".chart g").remove();
-    d3.select(".chart").append("g");
-    draw_bar_chart(months);
-    draw_show_months_button();
-  }, 1000);
-}
+
 
 function draw_bubble_map_back(d){
-  //draw_bar_chart([]);
-  //setTimeout(function(){
     d3.select(".chart").selectAll("*").remove();
     d3.select(".chart").append("g");
     draw_bubble_map(months);
-  //}, 1000);
 }
 
 function adjustxAxisTextForMonths(selection){
@@ -326,8 +268,8 @@ function generate_random_months_data(){
   }
 }
 
-function draw_show_months_button(){
-  d3.select(".chart").append('text').attr("class", "show_months").attr("x", 130).attr("y", 8).text("Zurück zu Bubble Map").on("click", function(d){
+function draw_show_months_button(months_new){
+  d3.select(".chart").append('text').attr("class", "show_months").attr("x", 130).attr("y", 8).text("Zurück").on("click", function(d){
     draw_bubble_map_back();
   });
 }
