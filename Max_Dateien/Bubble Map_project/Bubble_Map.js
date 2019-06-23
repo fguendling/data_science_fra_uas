@@ -99,7 +99,7 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
                 Stadt_Wahl = Frankfurt_am_Main
               }
           draw_bar_chart(Stadt_Wahl);
-          draw_show_months_button();
+          draw_button();
     }
     
     var mouseleave = function(d) {
@@ -130,7 +130,7 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
 
 // Bar Chart
 
-var margin = { top:10 , right:0 , bottom:30 , left:30 }
+var margin = { top:20 , right:0 , bottom:40 , left:30 }
 
 var screen_width;
 var screen_height;
@@ -140,32 +140,37 @@ var chart_container_height;
 
 var chart_width;
 var chart_height;
-
-var months = [{"Nomen": "gemeinsam mit", "Anzahl":4},{"Nomen": "Weitere Informationen", "Anzahl":3},{"Nomen": "gute Kenntnisse", "Anzahl":3},{"Nomen": "männliche Form", "Anzahl":3},{"Nomen": "interdisziplinären Teams", "Anzahl":3},{"Nomen": "familiar with", "Anzahl":2},{"Nomen": "eng mit", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2},{"Nomen": "agilen Teams", "Anzahl":2}];
+// Datensatz
 var Stuttgart = [{"Nomen": "gemeinsam mit", "Anzahl":4},{"Nomen": "Weitere Informationen", "Anzahl":3},{"Nomen": "gute Kenntnisse", "Anzahl":3}]
 var München = [{"Nomen": "männliche Form", "Anzahl":3},{"Nomen": "interdisziplinären Teams", "Anzahl":3},{"Nomen": "familiar with", "Anzahl":2}]
-var Frankfurt_am_Main = [{"Nomen": "eng mit", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
+var Frankfurt_am_Main = [{"Nomen": "eng mit", "Anzahl":1},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
 var Hamburg = [{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
 var Berlin = [{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2},{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2}]
 
-function draw_bar_chart(days){
-  
-  define_chart_dimensions();
-  var horizontal_scale = d3.scaleBand().domain(days.map(function(item){return item.Nomen})).rangeRound([10,chart_width]);
-  var vertical_scale = d3.scaleLinear().domain([0,d3.max(days, function(item){return item.Anzahl})]).range([chart_height, 10]);
-  var bar_width = chart_width / days.length - chart_width / days.length / 1.5;
-  var bar_horizontal_margin = (chart_width / days.length - bar_width) / 2;
+function draw_bar_chart(data){
+  // Achsen/Bars erstellen
+  define_chart();
+  var horizontal_scale = d3.scaleBand().domain(data.map(function(item){return item.Nomen})).rangeRound([0,chart_width]);
+  var vertical_scale = d3.scaleLinear().domain([0,d3.max(data, function(item){return item.Anzahl})]).range([chart_height, 0]);
+  var bar_width = chart_width / data.length - chart_width / data.length / 1.5;
+  var bar_horizontal_margin = (chart_width / data.length - bar_width) / 2;
   var xAxis = d3.axisBottom(horizontal_scale);
   var yAxis = d3.axisLeft(vertical_scale);
 
   var chart = d3.select("#d3_wrapper svg").attr("width", chart_container_width).attr("height", chart_container_height)
-    .select("g").attr("width", chart_width).attr("height", chart_height).attr("transform", "translate("+margin.left+", "+margin.top+")");
+    .select("#d3_wrapper svg g").attr("width", chart_width).attr("height", chart_height).attr("transform", "translate("+margin.left+", "+margin.top+")");
 
-  var bar = chart.selectAll(".bar").data(days);
-
-  d3.select(".x.axis").remove();
-  chart.append("g").attr("class", "x axis").attr("transform", "translate(0,"+(chart_container_height - margin.bottom)+")").call(xAxis).call(adjustxAxisTextForDays);
-  d3.select(".y.axis").remove();
+  var bar = chart.selectAll(".bar").data(data);
+  // Hover funktion einbauen
+  var update = bar.select("rect").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin})
+    .attr("y", function(d){return vertical_scale(d.Anzahl)})
+    .attr("width", bar_width)
+    .on("mouseover", function(d,i){
+        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Anzahl) + 15});
+      })
+    .attr("height", function(d){ return chart_height - vertical_scale(d.Anzahl)});
+    
+  chart.append("g").attr("class", "x axis").attr("transform", "translate(0,"+(chart_container_height - margin.bottom)+")").call(xAxis).call(adjustxAxis);
   chart.append("g").attr("class", "y axis").call(yAxis);
 
   var g = bar.enter().append("g").attr("class", "bar");
@@ -174,20 +179,20 @@ function draw_bar_chart(days){
     .attr("y", function(d){return vertical_scale(d.Anzahl)})
     .attr("width", bar_width)
     .on("mouseover", function(d,i){
-        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Quantity) + 15});
+        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Anzahl) + 15});
       })
     .on("mouseout", function(d,i){
         d3.select(this.parentNode).selectAll("text").remove();
       })
     .transition().delay(function(d,i){return i * 10})
     .attr("height", function(d){ return chart_height - vertical_scale(d.Anzahl)})
-    .attr("class", "day_bar");
+    .attr("class", "Random_bar");
 
   var exit = bar.exit();
     exit.select("rect").transition().duration("1000").attr("height", "0");
 }
-
-function define_chart_dimensions(){
+// Dimension des Charts bestimmen
+function define_chart(){
   screen_width = get_screen_width_height().width;
   screen_height = get_screen_width_height().height;
 
@@ -197,32 +202,27 @@ function define_chart_dimensions(){
   chart_width = chart_container_width - margin.right - margin.left;
   chart_height = chart_container_height - margin.top - margin.bottom;
 }
-
-function adjustxAxisTextForMonths(selection){
+// X Achse anpassen
+function adjustxAxis(selection){
   selection.selectAll("text").attr("transform", "translate(4,0)");
 }
-
-function adjustxAxisTextForDays(selection){
-  selection.selectAll("text").attr("transform", "translate(4,0)");
-}
-
-function draw_show_months_button(){
-  d3.select(".chart").append('text').attr("class", "show_months").attr("x", 130).attr("y", 8).text("Zurück").on("click", function(d){
+// Button für Return zu Bubble Map
+function draw_button(){
+  d3.select(".chart").append('text').attr("class", "show_months").attr("x", 100).attr("y", 8).text("Zurück").on("click", function(d){
     d3.select(".chart").selectAll("*").remove();
     d3.select(".chart").append("g");
     draw_bubble_map();
   });
 }
-
-// return width was 1000. 
+// Breite des Charts festlegen
 function define_chart_container_width(screen_width){
   if(screen_width > 1000) {
-    return 900;
+    return 1000;
   } else {
     return screen_width - 30;
   }
 }
-
+// Höhe des Charts festlegen
 function define_chart_container_height(screen_height){
   if(screen_height > 500) {
     return 600;
@@ -230,7 +230,7 @@ function define_chart_container_height(screen_height){
     return screen_height - 20;
   }
 }
-
+// Größe des Bildschirms bestimmen
 function get_screen_width_height(){
   var w = window,
     d = document,
