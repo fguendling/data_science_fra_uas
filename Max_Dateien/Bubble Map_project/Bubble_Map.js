@@ -1,43 +1,40 @@
+// Bubble Map
+
 function draw_bubble_map(){
-// Size ?
+// Größe der Bubble Map
 var width = 600
 var height = 600
 
 
-// The svg
-var svg = d3.select("#my_dataviz")
+// Das zu verwendende svg element
+var svg = d3.select("#BubbleMap")
   .append("svg")
   .attr("width", width)
   .attr("height", height)
 
-// The svg
-//var svg = d3.select("svg"),
-//    width = +svg.attr("width"),
-//    height = +svg.attr("height");
-
-// Map and projection
+// Lokalisierung und Fokus der Bubble Map
 var projection = d3.geoMercator()
-    .center([9, 50])                // GPS of location to zoom on
-    .scale(2020)                       // This is like the zoom
+    .center([9, 50])                // Fokus Ziel (Gps Koordinaten)
+    .scale(2020)                    // Zoom Einstellung
     .translate([ width/2, height/2 ])
 
 
-// Daten(Länge- und Breitegrad) für die Kreise bereitstellen
+// Daten für die Kreise bereitstellen
 var markers = [
-  {long: 11.581981, lat: 48.135125, name: 'München', jobs: 90}, // München
-  {long: 9.182932, lat: 48.775846, name: 'Stuttgart', jobs: 120}, // Stuttgart
-  {long: 8.6821267, lat: 50.1109221, name: 'Frankfurt am Main', jobs: 280}, //  Frankfurt am Main
-  {long: 9.993682, lat: 53.551085, name: 'Hamburg', jobs: 24}, // Hamburg
-  {long: 13.404954, lat: 52.520007, name: 'Berlin', jobs: 55} // Berlin
+  {long: 11.581981, lat: 48.135125, name: "München", jobs: 90}, 
+  {long: 9.182932, lat: 48.775846, name: "Stuttgart", jobs: 120},
+  {long: 8.6821267, lat: 50.1109221, name: "Frankfurt am Main", jobs: 280},
+  {long: 9.993682, lat: 53.551085, name: "Hamburg", jobs: 24},
+  {long: 13.404954, lat: 52.520007, name: "Berlin", jobs: 55}
 ];
 
-// Load external data and boot
+// Daten von github beziehen
 d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson", function(data){
 
-    // Filter data
+    // Datensatz nach Deutschland filtern
     data.features = data.features.filter( function(d){return d.properties.name=="Germany"} )
 
-    // Draw the map
+    // Karte zeichnen
     svg.append("g")
         .selectAll("path")
         .data(data.features)
@@ -50,13 +47,13 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
         .style("stroke", "black")
         .style("opacity", .3)
 
-    // Add a scale for bubble size
+    // Skala für Bubble erstellen. Die Höhe in .domain sollte die größte Zahl des Datensatze sein (Dynamische Anpassung fehlt noch). Die Skalierung wird in .range festgelegt.
     var size = d3.scaleLinear()
-      .domain([1,300])  // What's in the data
-      .range([ 4, 50])  // Size in pixel
+      .domain([1,300])  
+      .range([4, 50])  
 
-    // create a tooltip
-    var Tooltip = d3.select("#my_dataviz")
+    // Erstellung des Tooltips
+    var Tooltip = d3.select("#BubbleMap")
       .append("div")
       .attr("class", "tooltip")
       .style('position', 'absolute')
@@ -67,7 +64,7 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
       .style("border-radius", "5px")
       .style("padding", "5px")
 
-    // Three function that change the tooltip when user hover / move / leave a cell
+    // Drei Funktionen für die jewelige Veränderung des Tooltips bei Hover, bewegen und verlassen einer Bubble.
     var mouseover = function(d) {
       Tooltip.style("opacity", 1)
     }
@@ -78,18 +75,38 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
             .style("top", (d3.mouse(this)[1]) + "px")
     }
     var mouseclick = function(d){
-          d3.select("#my_dataviz").selectAll("*").remove();
-          d3.select("#my_dataviz").append("g");
-          var Stadt_Wahl = d.name;
-          draw_bar_chart(months,Stadt_Wahl);
-          draw_show_months_button(months_new);
+          d3.select("#BubbleMap").selectAll("*").remove();
+          d3.select("#BubbleMap").append("g");
+          var Stadt_Wahl;
+          switch (d.name){
+
+            case "Frankfurt am Main":
+                Stadt_Wahl = Frankfurt_am_Main;
+                break;
+            case "Hamburg":
+                Stadt_Wahl = Hamburg;
+                break;
+            case "München":
+                Stadt_Wahl = München;
+                break;
+            case "Berlin":
+                Stadt_Wahl = Berlin;
+                break;
+            case "Stuttgart":
+                Stadt_Wahl = Stuttgart;
+                break;
+            default:
+                Stadt_Wahl = Frankfurt_am_Main
+              }
+          draw_bar_chart(Stadt_Wahl);
+          draw_show_months_button();
     }
     
     var mouseleave = function(d) {
       Tooltip.style("opacity", 0)
     }
     
-    // Add circles:
+    // Erstellung der Bubble auf der Karte
     svg
       .selectAll("myCircles")
       .data(markers)
@@ -109,18 +126,9 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
       .on("mouseleave", mouseleave)
 
 })}
-function draw_show_months_button(){
-  d3.select("#my_dataviz").append('text').attr("class", "show_months").attr("x", 130).attr("y", 8).text("Zurück zu Bubble Map").on("click", function(d){
-    draw_months_back();
-  });
-}
-function draw_months_back(d){
-    d3.select(".#my_dataviz").selectAll("*").remove();
-    draw_bubble_map();
-}
 
 
-// Ab Hier import von Bar Chart Vorlage
+// Bar Chart
 
 var margin = { top:10 , right:0 , bottom:30 , left:30 }
 
@@ -133,76 +141,20 @@ var chart_container_height;
 var chart_width;
 var chart_height;
 
-var months_new = {
-  'Staedte': [
-    { 
-      'Stadt': "Stuttgart", 'Attribute': [
-          {"Nomen": "gemeinsam mit", "Häufigkeit": 4},{"Nomen": "Weitere Informationen", "Häufigkeit": 3},{"Nomen": "gute Kenntnisse", "Häufigkeit": 3}
-        ]
-    },
-    { 
-      'Stadt': "München", 'Attribute': [
-        {"Nomen": "männliche Form", "Häufigkeit": 3},{"Nomen": "interdisziplinären Teams", "Häufigkeit": 3},{"Nomen": "familiar with", "Häufigkeit": 2}
-      ]
-    },
-    {
-      'Stadt': "Frankfurt am Main", 'Attribute': [
-        {"Nomen": "eng mit", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
-      ]
-    },
-    {
-      'Stadt': "Hamburg", 'Attribute': [
-        {"Nomen": "agilen Teams", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
-      ]
-    },
-    {
-      'Stadt': "Berlin", 'Attribute': [
-        {"Nomen": "agilen Teams", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
-      ]
-    }
-  ]
-}
-var months_new2 = {
-  'Stuttgart': [
-          {"Nomen": "gemeinsam mit", "Häufigkeit": 4},{"Nomen": "Weitere Informationen", "Häufigkeit": 3},{"Nomen": "gute Kenntnisse", "Häufigkeit": 3}
-        ],
-  'München': [
-        {"Nomen": "männliche Form", "Häufigkeit": 3},{"Nomen": "interdisziplinären Teams", "Häufigkeit": 3},{"Nomen": "familiar with", "Häufigkeit": 2}
-      ],
-  'Frankfurt am Main': [
-        {"Nomen": "eng mit", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
-      ],
-  'Hamburg': [
-        {"Nomen": "agilen Teams", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
-      ],
-  'Berlin': [
-        {"Nomen": "agilen Teams", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2}
-      ]
-}
+var months = [{"Nomen": "gemeinsam mit", "Anzahl":4},{"Nomen": "Weitere Informationen", "Anzahl":3},{"Nomen": "gute Kenntnisse", "Anzahl":3},{"Nomen": "männliche Form", "Anzahl":3},{"Nomen": "interdisziplinären Teams", "Anzahl":3},{"Nomen": "familiar with", "Anzahl":2},{"Nomen": "eng mit", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2},{"Nomen": "agilen Teams", "Anzahl":2}];
+var Stuttgart = [{"Nomen": "gemeinsam mit", "Anzahl":4},{"Nomen": "Weitere Informationen", "Anzahl":3},{"Nomen": "gute Kenntnisse", "Anzahl":3}]
+var München = [{"Nomen": "männliche Form", "Anzahl":3},{"Nomen": "interdisziplinären Teams", "Anzahl":3},{"Nomen": "familiar with", "Anzahl":2}]
+var Frankfurt_am_Main = [{"Nomen": "eng mit", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
+var Hamburg = [{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
+var Berlin = [{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2},{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2}]
 
-var months = [{"Nomen": "gemeinsam mit", "Häufigkeit": 4},{"Nomen": "Weitere Informationen", "Häufigkeit": 3},{"Nomen": "gute Kenntnisse", "Häufigkeit": 3},{"Nomen": "männliche Form", "Häufigkeit": 3},{"Nomen": "interdisziplinären Teams", "Häufigkeit": 3},{"Nomen": "familiar with", "Häufigkeit": 2},{"Nomen": "eng mit", "Häufigkeit": 2},{"Nomen": "gute Deutsch-", "Häufigkeit": 2},{"Nomen": "zukunftsweisenden Technologien", "Häufigkeit": 2},{"Nomen": "agilen Teams", "Häufigkeit": 2}];
-//days.Städte = days.Städte.filter( function(d){return d.Stadt==Stadt_Wahl} )
-// Starting point of the script execution
-//define_chart_dimensions();
-//generate_random_months_data();
-//draw_chart_of_months(months);
-
-//window.onresize = function (){
-//  define_chart_dimensions();
-//  draw_bar_chart(days);
-//}
-
-function draw_bar_chart(days,Stadt_Wahl){
+function draw_bar_chart(days){
   
   define_chart_dimensions();
-  generate_random_months_data();
-  //months_new2[Stadt_Wahl].Nomen;
-  //months_new2[Stadt_Wahl].Häufigkeit;
   var horizontal_scale = d3.scaleBand().domain(days.map(function(item){return item.Nomen})).rangeRound([10,chart_width]);
-  console.log(function(item){item.Nomen});
-  var vertical_scale = d3.scaleLinear().domain([0,d3.max(days, function(item){return item.Häufigkeit})]).range([chart_height, 10]);
-  var bar_width = chart_width / days.length - chart_width / days.length / 1.3;
-  var bar_horizontal_margin = (chart_width / days.length - bar_width) / 1.5;
+  var vertical_scale = d3.scaleLinear().domain([0,d3.max(days, function(item){return item.Anzahl})]).range([chart_height, 10]);
+  var bar_width = chart_width / days.length - chart_width / days.length / 1.5;
+  var bar_horizontal_margin = (chart_width / days.length - bar_width) / 2;
   var xAxis = d3.axisBottom(horizontal_scale);
   var yAxis = d3.axisLeft(vertical_scale);
 
@@ -219,16 +171,16 @@ function draw_bar_chart(days,Stadt_Wahl){
   var g = bar.enter().append("g").attr("class", "bar");
 
   g.append("rect").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin})
-    .attr("y", function(d){return vertical_scale(d.Häufigkeit)})
+    .attr("y", function(d){return vertical_scale(d.Anzahl)})
     .attr("width", bar_width)
     .on("mouseover", function(d,i){
-        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Häufigkeit).attr("y", function(d){return vertical_scale(d.Quantity) + 15});
+        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Quantity) + 15});
       })
     .on("mouseout", function(d,i){
         d3.select(this.parentNode).selectAll("text").remove();
       })
     .transition().delay(function(d,i){return i * 10})
-    .attr("height", function(d){ return chart_height - vertical_scale(d.Häufigkeit)})
+    .attr("height", function(d){ return chart_height - vertical_scale(d.Anzahl)})
     .attr("class", "day_bar");
 
   var exit = bar.exit();
@@ -246,13 +198,6 @@ function define_chart_dimensions(){
   chart_height = chart_container_height - margin.top - margin.bottom;
 }
 
-
-function draw_bubble_map_back(d){
-    d3.select(".chart").selectAll("*").remove();
-    d3.select(".chart").append("g");
-    draw_bubble_map(months);
-}
-
 function adjustxAxisTextForMonths(selection){
   selection.selectAll("text").attr("transform", "translate(4,0)");
 }
@@ -261,23 +206,18 @@ function adjustxAxisTextForDays(selection){
   selection.selectAll("text").attr("transform", "translate(4,0)");
 }
 
-function generate_random_months_data(){
-  for(var i = 0; i < months.length; i++){
-    months[i].Quantity = months[i].Quantity;
-    // months[i].Quantity = Math.floor(Math.random() * (100 - 0) + 0);
-  }
-}
-
-function draw_show_months_button(months_new){
+function draw_show_months_button(){
   d3.select(".chart").append('text').attr("class", "show_months").attr("x", 130).attr("y", 8).text("Zurück").on("click", function(d){
-    draw_bubble_map_back();
+    d3.select(".chart").selectAll("*").remove();
+    d3.select(".chart").append("g");
+    draw_bubble_map();
   });
 }
 
 // return width was 1000. 
 function define_chart_container_width(screen_width){
   if(screen_width > 1000) {
-    return 1000;
+    return 900;
   } else {
     return screen_width - 30;
   }
