@@ -40,6 +40,29 @@ d3.json("data.json", function(data) {
       .range([innerRadius, outerRadius])   // Domain will be define later.
       .domain([0, 300]); // Domain of Y is from 0 to the max seen in the data
 
+  var Tooltip = d3.select("#my_dataviz")
+      .append("div")
+      .attr("class", "tooltip")
+      .style('position', 'absolute')
+      .style("opacity", 0)
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "20px")
+
+  var mouseover = function(data) {
+      Tooltip.style("opacity", 1)
+    }
+  var mousemove = function(data) {
+      Tooltip
+            .html("Anzahl: " + d.Anzahl)
+            .style("left", (d3.mouse(this)[0]+10) + "px")
+            .style("top", (d3.mouse(this)[1]) + "px")
+  }
+  var mouseleave = function(data) {
+      Tooltip.style("opacity", 0)
+  }
   // Add the bars
   svg.append("g")
     .selectAll("path")
@@ -54,6 +77,9 @@ d3.json("data.json", function(data) {
           .endAngle(function(d) { return x(d.Sprache) + x.bandwidth(); })
           .padAngle(0.01)
           .padRadius(innerRadius))
+      .on("mouseover",mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave)
 
   // Add the labels
   svg.append("g")
