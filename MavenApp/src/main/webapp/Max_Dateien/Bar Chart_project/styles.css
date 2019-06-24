@@ -6,8 +6,6 @@
     background-color: blue;
     height:20px;
   }
-  .chart {
-  }
 
   #d3_wrapper .bar text {
     fill:white;
@@ -19,8 +17,7 @@
     text-anchor: end;
     font-weight: bold;
   }
-  .axis text {
-  }
+
 
   .axis path,
   .axis line {

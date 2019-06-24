@@ -54,7 +54,7 @@ function draw_chart_of_months(data){
   enter.append("rect").attr("x", function(d,i) {return horizontal_scale(d.Month) + bar_horizontal_margin})
     .attr("y", function(d){return vertical_scale(d.Quantity)})
     .attr("width", bar_width)
-    .on("click", function(d, i) { month_selected(d)})  // on click swap bar chart?
+    .on("click", function(d, i) { month_selected(d)})  // on click swap bar chart
     .on("mouseover", function(d,i){
         d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Month) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Quantity).attr("y", function(d){return vertical_scale(d.Quantity) + 15});
       })
