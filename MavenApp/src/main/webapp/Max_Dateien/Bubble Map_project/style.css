@@ -1,4 +1,5 @@
 .circle:hover{
+  fill: rgb(50, 202, 63);
   stroke: black;
   stroke-width: 4px;
 }
