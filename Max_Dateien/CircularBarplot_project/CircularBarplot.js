@@ -1,19 +1,3 @@
-<!-- Code from d3-graph-gallery.com -->
-<!DOCTYPE html>
-<meta charset="utf-8">
-
-<!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
-
-<!-- Function for radial charts -->
-<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
-
-<!-- Create a div where the graph will take place -->
-<div id="my_dataviz"></div>
-
-
-<script>
-
 // set the dimensions and margins of the graph
 var margin = {top: 100, right: 0, bottom: 0, left: 0},
     width = 600 - margin.left - margin.right,
@@ -58,8 +42,10 @@ d3.json("data.json", function(data) {
     var coordinates = d3.mouse(svg.node());
       Tooltip
             .html("Anzahl: " + d.Anzahl)
-            .style("left", (d3.mouse(svg.node())))
-            .style("top", (d3.mouse(svg.node())))
+            .style("left", (d3.mouse(this)[0]+350) + "px")
+            .style("top", (d3.mouse(this)[1]+300) + "px")
+            //.style("left", (d3.mouse(svg.node())))
+            //.style("top", (d3.mouse(svg.node())))
   }
   var mouseleave = function(d) {
       Tooltip.style("opacity", 0)
@@ -97,5 +83,3 @@ d3.json("data.json", function(data) {
         .attr("alignment-baseline", "middle")
 
 });
-
-</script>
