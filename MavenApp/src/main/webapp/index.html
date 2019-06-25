@@ -19,8 +19,6 @@
 <script src="another_script.js"></script>
 <script src="drill_down.js"></script>
 <script src="d3_script.js"></script>
-<script type="text/javascript" src="Dung/particles.js"></script>
-<script type="text/javascript" src="Dung/app.js"></script>
 <script src="Max_Dateien/Bubble Map_project/Bubble_Map.js"></script>
 <link rel="stylesheet" type="text/css" href="awesome.css">
 <link rel="stylesheet" type="text/css" href="style.css">
@@ -28,6 +26,8 @@
 
 <body onpageshow="draw_bubble_map(); chart_2_v4(); chart3()">
 	<div id="particles-js"></div>
+	<script type="text/javascript" src="Dung_Content/particles.js"></script>
+	<script type="text/javascript" src="Dung_Content/app.js"></script>
 
 	<header>
 		<div id="nav" class="topnav">
@@ -81,8 +81,8 @@
 	<section id="sec_1" class="title">
 		<p>
 		<div id="d3_wrapper">
-	<h2>Feature 1 - Anzahl der "Data Scientist" Jobs, pro Stadt</h2>
-			<div id="my_dataviz">
+	<h2 id="dynamic_h2">Anzahl der "Data Scientist" Jobs, pro Stadt</h2>
+			<div id="BubbleMap">
 				<g></g>
 			</div>
 			<svg class="chart">
@@ -93,23 +93,44 @@
 	</section>
 
 	<section id="sec_2" class="title">
-		<h2>Feature 2 - Gesuchte Berufserfahrung bei Projektmanagern, Deutschlandweit, mit Drill Down Möglichkeit</h2>
+		<h2>Gesuchte Berufserfahrung bei Projektmanagern, Deutschlandweit, mit Drill Down</h2>
 	
 		<div id=chart_2_wrapper></div>
 	</section>
 	
 	<section id="sec_3" class="title">
-		<h2>Chart 3 - Häufigkeit von bestimmten Programmiersprachen, bei Suche nach "Softwareentwickler", Deutschlandweit</h2>
+		<h2>Häufigkeit von gesuchten Programmiersprachen, bei Suche nach "Softwareentwickler", Deutschlandweit</h2>
 		<div id="todo">
 		Waiting for Max</div>	
 		
 		</section>
 	
 	<section id="about_section" class="title">
-		<h2>About Us</h2>
-				<div id="todo">
-		Waiting for Dung</div>	
-		
+			<h2>Das Team</h2>
+			<div class="news">
+			
+				<div class="article">
+				<div class="thumb">
+					<img alt="Felix" src="Dung_Content/photo/Felix21.png">
+					<p>Felix Gündling</p>
+				</div>
+				</div>
+				
+				<div class="article">
+				<div class="thumb">
+				   <img alt="Max" src="Dung_Content/photo/Bild_Max12.png">
+				   <p>Maximilian Schütz</p>
+				   
+				</div>
+				</div>
+
+				<div class="article">
+				<div class="thumb">
+					<img alt="Dung" src="Dung_Content/photo/TruongDung.png">
+					<p>Thi Dung Truong</p>
+				</div>
+	    </div>
+	</div>
 		
 	</section>
 

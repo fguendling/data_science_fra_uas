@@ -10,31 +10,66 @@ $(document).ready(function() {
 		my_id = this.id;
 
 		if (my_id == "Crawl_and_NLP") {
-			$('#content').load("crawl_and_nlp.html")
+			//$('#content').load("crawl_and_nlp.html")
+		
+			    $('html,body').animate({
+			        scrollTop: $("#sec_09").offset().top},
+			        'slow');		
 		}
 
 		if (my_id == "home") {
-			$('#content').html("<h2>Herzlich Willkommen</h2>")
+			//$('#content').html('<h1>This is home</h1>');
+			
+		    $('html,body').animate({
+		        scrollTop: $("#content").offset().top},
+		        'slow');	
 		}
 
-		if (my_id == "Charts") {
-			$('#content').html('<h2>Chart 1 - Anzahl der "Data Scientist" Jobs, pro Stadt</h2>');
-			$('#content').append('<div id="my_dataviz" width="600" height="600"></div>');
-			$('#content').load(bubblemap());
+		if (my_id == "feature_1") {
+//			$('#content').html('<h2>Chart 1 - Anzahl der "Data Scientist" Jobs, pro Stadt</h2>');
+//			$('#content').append('<div id="my_dataviz" width="600" height="600"></div>');
+//			$('#content').load(bubblemap());
+			
+		    $('html,body').animate({
+		        scrollTop: $("#sec_1").offset().top},
+		        'slow');					
 		}
 
-		if (my_id == "Charts2") {
-			$('#content').html('<div></div>');
+		if (my_id == "feature_2") {
+/*			$('#content').html('<div></div>');
 			$('#content').on('load', onclick_example());
 			if ($('svg').is(':visible')) {
 				drill_down();
 			} else {
 				setTimeout(drill_down, 1000);
 			}
+*/
+			$('html,body').animate({
+		        scrollTop: $("#sec_2").offset().top},
+		        'slow');					
+
+			
 		}		
-		if (my_id == "Charts3") {
-			$('#content').load('sunburst.html');		
-			$('#content').load(setTimeout(chart3, 100));
+		if (my_id == "feature_3") {
+//			$('#content').load('sunburst.html');		
+//			$('#content').load(setTimeout(chart3, 100));
+
+			$('html,body').animate({
+		        scrollTop: $("#sec_3").offset().top},
+		        'slow');					
+
+		
+		}
+
+		if (my_id == "About") {
+//			$('#content').load('sunburst.html');		
+//			$('#content').load(setTimeout(chart3, 100));
+
+			$('html,body').animate({
+		        scrollTop: $("#about_section").offset().top},
+		        'slow');					
+
+		
 		}
 	});
 

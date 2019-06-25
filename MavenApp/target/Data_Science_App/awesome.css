@@ -1,13 +1,71 @@
+* {
+margin:0;
+}
+
+html{
+	height: 100%;
+	width: 100%
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'San Francisco', 'Open Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  width: 100%;
+  height: 100%;
+}
+
+h1 {
+	display: block;
+	margin: auto;
+	margin-top: 30vh;
+}
+
+header{
+	width: 100%;
+	position: absolute;
+	top: 0;
+}
+
+p{
+	
+	text-color: #f0fff0;
+	text-align: center;	
+	
+}
+
+svg{
+	display: block;
+	margin: auto;
+	padding-top: 50px;
+}
+
+path{
+	display: block;
+	margin: auto;
+	padding-top: 50px;
+}
+
+
+#particles-js{
+	height: 100%;
+	background: black;
+}
+}
+
 /* Add a black background color to the top navigation */
 .topnav {
-	background-color: #333;
+	background-color: black;
 	overflow: hidden;
+	position: fixed;
 }
 
 /* Style the links inside the navigation bar */
 .topnav a {
 	float: left;
-	color: #f2f2f2;
+	color: white;
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
@@ -22,9 +80,11 @@
 
 /* Add a color to the active/current link */
 .topnav a.active {
-	background-color: #4CAF50;
+	background-color: rgb(105, 179, 162);
 	color: white;
 }
+
+// this is for bar chart
 
 .bar {
 	fill: steelblue;
@@ -44,18 +104,8 @@
 	shape-rendering: crispEdges;
 }
 
-
 // everything below is for sunburst chart example
 
-body {
-  font-family: 'Open Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  background-color: #fff;
-  width: 1000px;
-  height: 700px;
-  margin-top: 10px;
-}
 #skillmap .skills-wrapper {
   margin-top: 10px;
   overflow: auto;
@@ -95,7 +145,171 @@ body {
   shape-rendering: geometricPrecision;
 }
 
+#footer .container p{
+	font-size:20px;
+}
+
+#content{
+	display: block;
+	width: 100%;
+	position: absolute;
+	top: 10%;
+	text-align: center;
+	margin-top:auto;
+}
+
+.title h1{
+	color: #fff;
+	font-size: 75px;
+}
+
+.title h2{
+	margin-top: 10px;
+	margin-left: 20px;
+	margin-right: 20px;
+	text-align: center;
+	font-size: 35px;
+	padding-top:100px;
+}
+
+.title div{
+	background-color:white;
+}
+
+section{
+  height: 100vh;
+}
+
+#sec_09  {
+  margin: auto;
+  width: 50%;
+  
+}
+
+#todo{
+	text-align: center;
+	color: red;
+	font-size: 30px;
+	padding-top: 30px;
+}
+
+table {
+	padding-top: 50px;
+    margin: 0px auto;
+  }
+	
+}
+section#sec_1  {}
+section#sec_2  {}
+section#sec_3  {}
+
+#about_section {
+	display: block;
+	text-align: center;
+	margin-top: 15em;
+	
+}
+
+#footer{
+	text-align: center;
+	height:10px;
+	padding-bottom: 20px;
+}
+
+a{
+	text-decoration: none;
+	cursor: pointer;
+	color: #696969;
+}
+
+// css test von max
+
 .circle:hover{
   stroke: black;
   stroke-width: 4px;
+}
+html {
+  background-color: white;
+}
+
+.chart {
+}
+
+#d3_wrapper .bar text {
+  fill:white;
+}
+
+.chart text {
+  fill: #6f7f87;
+  font: 10px sans-serif;
+  text-anchor: end;
+  font-weight: bold;
+}
+
+.axis path,
+.axis line {
+stroke: #000;
+shape-rendering: crispEdges;
+}
+
+.show_months:hover {
+cursor: pointer;
+}
+
+.month_bar {
+fill: #3a2bbe;
+stroke: #e55034;
+}
+.month_bar:hover {
+cursor: pointer;
+fill:#854438;
+}
+
+.day_bar {
+fill: #14a7e1;
+stroke:#022330;
+}
+.day_bar:hover {
+fill: #13495d;
+}
+
+// Bilder..
+
+.news{
+    width: 100%;
+    height: auto;
+	top: 50%;
+
+}
+
+.article {
+    width: 200px;
+    height: 220px;
+    display: inline-block;
+    padding: 20px;
+    margin-left: 10px;
+    margin-top:100px;
+    vertical-align:top;
+    
+}
+
+
+.thumb {
+
+    width: 200px;
+    height: 200px;
+   
+} 
+
+img{
+	z-index:1;
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.thumb p{
+	margin-top: 20px;
+	color: #fff;
 }

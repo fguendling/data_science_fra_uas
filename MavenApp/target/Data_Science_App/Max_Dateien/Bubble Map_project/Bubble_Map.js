@@ -14,19 +14,45 @@ var svg = d3.select("#BubbleMap")
 
 // Lokalisierung und Fokus der Bubble Map
 var projection = d3.geoMercator()
-    .center([9, 50])                // Fokus Ziel (Gps Koordinaten)
+    .center([10.5, 50])                // Fokus Ziel (Gps Koordinaten)
     .scale(2020)                    // Zoom Einstellung
     .translate([ width/2, height/2 ])
 
 
 // Daten für die Kreise bereitstellen
-var markers = [
+/*var markers = [
   {long: 11.581981, lat: 48.135125, name: "München", jobs: 90}, 
   {long: 9.182932, lat: 48.775846, name: "Stuttgart", jobs: 120},
   {long: 8.6821267, lat: 50.1109221, name: "Frankfurt am Main", jobs: 280},
   {long: 9.993682, lat: 53.551085, name: "Hamburg", jobs: 24},
   {long: 13.404954, lat: 52.520007, name: "Berlin", jobs: 55}
 ];
+*/
+    
+    var markers = (function () {
+	    var json = null;
+	    $.ajax({
+	        'async': false,
+	        'global': false,
+	        'url': './Bubble_Map_Data.json',
+	        'dataType': "json",
+	        'success': function (data) {
+	            json = data;
+	        }
+	    });
+	    return json;
+	})(); 
+    	
+    	
+    	// Hinzufügen der Koordinaten
+markers[0].lat = '52.520007';  // Berlin
+markers[0].long = '13.404954';  // Berlin
+markers[1].lat = '50.1109221'; // Frankfurt
+markers[1].long = '8.6821267'; // Frankfurt
+markers[2].lat = '50.937738'; // Köln 
+markers[2].long = '6.956315'; // Köln
+markers[3].lat = '48.775846'; // Stuttgart
+markers[3].long = '9.182932'; // Stuttgart
 
 // Daten von github beziehen
 d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson", function(data){
@@ -70,24 +96,21 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
     }
     var mousemove = function(d) {
       Tooltip
-            .html(d.name + "<br>" + "Data Scientist Jobs: " + d.jobs)
-            .style("left", (d3.mouse(this)[0]+10) + "px")
-            .style("top", (d3.mouse(this)[1]) + "px")
+            .html(d.Ort + "<br>" + "Data Scientist Jobs: " + d.Count)
+            .style("left", (d3.mouse(this)[0]+400) + "px")
+            .style("top", (d3.mouse(this)[1]) + ((window.innerHeight*2)+150) + "px")
     }
     var mouseclick = function(d){
           d3.select("#BubbleMap").selectAll("*").remove();
           d3.select("#BubbleMap").append("g");
           var Stadt_Wahl;
-          switch (d.name){
+          switch (d.Ort){
 
             case "Frankfurt am Main":
                 Stadt_Wahl = Frankfurt_am_Main;
                 break;
-            case "Hamburg":
+            case "Koeln":
                 Stadt_Wahl = Hamburg;
-                break;
-            case "München":
-                Stadt_Wahl = München;
                 break;
             case "Berlin":
                 Stadt_Wahl = Berlin;
@@ -114,7 +137,7 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
       .append("circle")
         .attr("cx", function(d){ return projection([d.long, d.lat])[0] })
         .attr("cy", function(d){ return projection([d.long, d.lat])[1] })
-        .attr("r", function(d){ return size(d.jobs)})
+        .attr("r", function(d){ return size(d.Count)})
         .attr("class", "circle")
         .style("fill", "69b3a2")
         .attr("stroke", "#69b3a2")
@@ -147,8 +170,11 @@ var Frankfurt_am_Main = [{"Nomen": "eng mit", "Anzahl":1},{"Nomen": "gute Deutsc
 var Hamburg = [{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
 var Berlin = [{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2},{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2}]
 
+
+
 function draw_bar_chart(data){
   // Achsen/Bars erstellen
+  $('#dynamic_h2').text("Die häufigsten Fachbegriffe");
   define_chart();
   var horizontal_scale = d3.scaleBand().domain(data.map(function(item){return item.Nomen})).rangeRound([0,chart_width]);
   var vertical_scale = d3.scaleLinear().domain([0,d3.max(data, function(item){return item.Anzahl})]).range([chart_height, 0]);
@@ -212,6 +238,7 @@ function draw_button(){
     d3.select(".chart").selectAll("*").remove();
     d3.select(".chart").append("g");
     draw_bubble_map();
+    $('#dynamic_h2').text("Anzahl der \"Data Scientist\" Jobs, pro Stadt");
   });
 }
 // Breite des Charts festlegen

@@ -1,7 +1,9 @@
+
 // dieses Beispiel verwendet v3 von d3.js und wurde entnommen von
 // http://bl.ocks.org/Jverma/887877fc5c2c2d99be10 
 
 function awesome_chart_example() {
+	
 	$(document).ready(
 			function() {
 				// set the dimensions of the canvas
@@ -72,8 +74,95 @@ function awesome_chart_example() {
 			});
 };
 
-function onclick_example() {
+function chart_2_v4(){
+		
+	// load the data_set
+	var data1 = (function () {
+	    var json = null;
+	    $.ajax({
+	        'async': false,
+	        'global': false,
+	        'url': './Aufgabe2.json',
+	        'dataType': "json",
+	        'success': function (data) {
+	            json = data;
+	        }
+	    });
+	    return json;
+	})(); 
+		
+		
+	// set the dimensions and margins of the graph
+	var margin = {top: 30, right: 30, bottom: 70, left: 60},
+	    width = 1000 - margin.left - margin.right,
+	    height = 400 - margin.top - margin.bottom;
 
+	// append the svg object to the body of the page
+	var svg = d3.select("#chart_2_wrapper")
+	  .append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+	    .attr("transform",
+	          "translate(" + margin.left + "," + margin.top + ")");
+
+	// Initialize the X axis
+	var x = d3.scaleBand()
+	  .range([ 0, width ])
+	  .padding(0.2);
+	var xAxis = svg.append("g")
+	  .attr("transform", "translate(0," + height + ")")
+
+	// Initialize the Y axis
+	var y = d3.scaleLinear()
+	  .range([ height, 0]);
+	var yAxis = svg.append("g")
+	  .attr("class", "myYaxis")
+
+
+	// A function that create / update the plot for a given variable:
+	function update(data) {
+
+	  // Update the X axis
+	  x.domain(data.map(function(d) { return d.jahre; }))
+	  xAxis.call(d3.axisBottom(x))
+
+	  // Update the Y axis
+	  y.domain([0, d3.max(data, function(d) { return d.count }) ]);
+	  yAxis.transition().duration(1000).call(d3.axisLeft(y));
+
+	  // Create the u variable
+	  var u = svg.selectAll("rect")
+	    .data(data)
+
+	  u
+	    .enter()
+	    .append("rect") // Add a new rect for each new elements
+	    .merge(u) // get the already existing elements as well
+	    .transition() // and apply changes to all of them
+	    .duration(1000)
+	      .attr("x", function(d) { return x(d.jahre); })
+	      .attr("y", function(d) { return y(d.count); })
+	      .attr("width", x.bandwidth())
+	      .attr("height", function(d) { return height - y(d.count); })
+	      .attr("fill", "#69b3a2")
+
+	  // If less group in the new dataset, I delete the ones not in use anymore
+	  u
+	    .exit()
+	    .remove()
+	}
+
+	// Initialize the plot with the first dataset
+	update(data1)
+	
+	drill_down();
+
+};
+
+function onclick_example() {
+	// we need v3 here.
+	require( ["d3_v3/d3.v3.min.js"], function(d3) { 
 	$(document).ready(
 			function() {
 				// set the dimensions of the canvas
@@ -86,7 +175,7 @@ function onclick_example() {
 						- margin.top - margin.bottom;
 
 				// set the ranges
-				var x = d3.scale.ordinal().rangeRoundBands([ 0, width ], .05);
+				var x = d3.scale.ordinal().rangeRoundBands([ 0, width ], 5);
 				var y = d3.scale.linear().range([ height, 0 ]);
 
 				// define the axis
@@ -94,12 +183,12 @@ function onclick_example() {
 				var yAxis = d3.svg.axis().scale(y).orient("left").ticks(10);
 
 				// add the SVG element
-				var svg = d3.select("#content").append("svg").attr("width",
+				var svg = d3.select("#chart_2_wrapper").append("svg").attr("width",
 						width + margin.left + margin.right).attr("height",
 						height + margin.top + margin.bottom).append("g").attr(
 						"transform",
 						"translate(" + margin.left + "," + margin.top + ")");
-
+				
 				// load the data
 				// das mit dem Servlet geht auch.
 				// d3.json("/MavenApp/SimpleServlet", function(error, data) {
@@ -142,6 +231,8 @@ function onclick_example() {
 							});
 				});
 			});
+	
+});
 };
 
 
@@ -149,7 +240,7 @@ function chart3() {
 
 	$(document).ready(
 			function() {
-// Data 
+// Data
 var skillsdata;
 
 skillsdata = {
@@ -584,4 +675,6 @@ sunburst
     .attr("r", rad / Math.PI)
     .attr("opacity", 0);
 initchart();
-})};
+})
+};
+

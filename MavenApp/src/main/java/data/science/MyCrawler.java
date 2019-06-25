@@ -70,9 +70,17 @@ public class MyCrawler {
 			// Inhalt der Ausschreibung
 			Element content = subpage_doc.select("div[id=jobDescriptionText]").first();
 
-			// Firma, die ausschreibt
-			Element company = subpage_doc.select("div[class=\"icl-u-lg-mr--sm icl-u-xs-mr--xs\"]").first();
-
+			String comp_name = "";
+			try {
+				// Firma, die ausschreibt
+				Element company = subpage_doc.select("div[class=\"icl-u-lg-mr--sm icl-u-xs-mr--xs\"]").first();
+//			    number = page.select(".page").last().text();
+			    if (company!= null) {
+			        comp_name = company.text();
+			    }
+			} catch (NullPointerException e) {
+				comp_name = "null";
+			}				 			
 			// the mysql insert statement
 			String query = " insert into test.Ausschreibungen "
 					+ "(Ausschreibungs_Titel, ausschreibungs_inhalt, Webseite, Suchbegriff_Ort, "
@@ -87,7 +95,7 @@ public class MyCrawler {
 			preparedStmt.setString(3, "Indeed.com");
 			preparedStmt.setString(4, place_result);
 			preparedStmt.setString(5, job_result);
-			preparedStmt.setString(6, company.text());
+			preparedStmt.setString(6, comp_name);
 			preparedStmt.setTimestamp(7, date);
 
 			// execute the preparedstatement
