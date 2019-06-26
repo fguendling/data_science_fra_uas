@@ -1,3 +1,4 @@
+
 // set the dimensions and margins of the graph
 var margin = {top: 100, right: 0, bottom: 0, left: 0},
     width = 600 - margin.left - margin.right,
@@ -13,6 +14,8 @@ var svg = d3.select("#my_dataviz")
   .append("g")
     .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
 
+var RemovedValues = [];
+
 d3.json("data.json", function(data) {
 
   // Scales
@@ -22,7 +25,7 @@ d3.json("data.json", function(data) {
       .domain(data.map(function(d) { return d.Sprache; })); // The domain of the X axis is the list of states.
   var y = d3.scaleRadial()
       .range([innerRadius, outerRadius])   // Domain will be define later.
-      .domain([0, 300]); // Domain of Y is from 0 to the max seen in the data
+      .domain([0, d3.max(data, function(d){return +d.Anzahl;})]); // Domain of Y is from 0 to the max seen in the data
 
   var Tooltip = d3.select("#my_dataviz")
       .append("div")
@@ -82,4 +85,58 @@ d3.json("data.json", function(data) {
         .style("font-size", "16px")
         .attr("alignment-baseline", "middle")
 
+    // For each check box:
+  d3.selectAll(".checkbox").each(function(d){
+    checkboxen = d3.select(this);
+    language = checkboxen.property("Sprache")
+
+    // If the box is check, I show the group
+    if(cb.property("checked")){
+      svg.append("g")
+        .selectAll("path")
+        .data(data)
+        .enter()
+        .append("path")
+          .attr("fill", "#69b3a2")
+          .attr("d", d3.arc()     // imagine your doing a part of a donut plot
+              .innerRadius(innerRadius)
+              .outerRadius(function(d) { return y(d['Anzahl']); })
+              .startAngle(function(d) { return x(d.Sprache); })
+              .endAngle(function(d) { return x(d.Sprache) + x.bandwidth(); })
+              .padAngle(0.01)
+              .padRadius(innerRadius))
+          .on("mouseover",mouseover)
+          .on("mousemove", mousemove)
+          .on("mouseleave", mouseleave)
+
+    // Otherwise I hide it
+    }else{
+      
+      // not working
+      svg.selectAll("."+language).transition().duration(1000).style("opacity", 0).attr("d", d3.arc()
+      .innerRadius(innerRadius)
+      .outerRadius(function(d) { return y(d['Anzahl']); })
+      .startAngle(function(d) { return x(d.Sprache); })
+      .endAngle(function(d) { return x(d.Sprache) + x.bandwidth(); })
+      .padAngle(0.01)
+      .padRadius(innerRadius))
+      
+
+      // Work in Progress
+      var nest =[{"Sprache": "Java", "Anzahl": 285},{"Sprache": "C#","Anzahl": 148}];
+
+      for(i=0;i<nest2.length;i++){
+
+          var test = nest.Sprache;
+          var n = nest.includes(test);
+          document.getElementById("demo").innerHTML = n;
+          }
+  d3.selectAll(".checkbox").on("change",update);
+  update();
+  })        
+  
 });
+
+
+
+
