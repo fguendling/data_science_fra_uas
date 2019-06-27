@@ -24,3 +24,15 @@ on Ausschreibungs_Inhalt_POS.ausschreibungs_id = Ausschreibungen.ausschreibungs_
 where Ausschreibungen.suchbegriff_job = "Softwareentwickler";
 
 
+delete from Ausschreibungs_Inhalt_POS where ausschreibungs_id in ( 
+select a.ausschreibungs_id from Ausschreibungs_Inhalt_POS pos
+left join Ausschreibungen a
+on a.Ausschreibungs_ID = pos.Ausschreibungs_ID
+where a.ausschreibungs_id is null);
+
+
+select count(*) from ( 
+
+select a.ausschreibungs_id from Ausschreibungs_Inhalt_POS pos
+inner join Ausschreibungen a
+on a.Ausschreibungs_ID = pos.Ausschreibungs_ID) fug;

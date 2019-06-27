@@ -22,5 +22,5 @@ where p.pos = 'card'
 and a.token like 'jahre'
 and au.suchbegriff_job = 'Projektmanager'
 
-and p.token = ?
+-- and p.token = ?
 order by p.ausschreibungs_id;

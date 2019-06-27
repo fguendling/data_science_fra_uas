@@ -17,8 +17,3 @@ group by suchbegriff_ort) count_by_cities;
 
 
 
-
-
-
-
-

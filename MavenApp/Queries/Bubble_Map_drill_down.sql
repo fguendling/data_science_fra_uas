@@ -1,8 +1,13 @@
 -- Bubble_Map_Drill_Down
--- ist ok so, es muss halt ein json für jede Stadt vorbereitet werden,
+-- ist ok so, es wird ein json für jede Stadt vorbereitet,
 -- damit es schnell genug lädt auf der Seite.
 
-select count(*), concatenated_result from (
+SELECT CONCAT(
+    '[',
+    GROUP_CONCAT(json_object('Count', count, 'fachbegriff', concatenated_result)),
+    ']'
+) FROM (
+select count(*) count, concatenated_result from (
 select concat(vorgaenger, ' ', nachfolger) concatenated_result from
 	(select 
 		successor_prep.token vorgaenger, 
@@ -40,7 +45,5 @@ where concatenated_result not in ('of the', 'LOOKING FOR', 'Experience with',
                                     'of our', 'team of', 'THE TEAM', 'WHERE YOUR', 
                                     'the world', 'YOUR EXPERTISE', 'diversity and')
 group by concatenated_result
-order by 1 desc Limit 10;
-
-
+order by 1 desc Limit 10) res;
 
