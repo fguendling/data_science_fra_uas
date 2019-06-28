@@ -102,7 +102,9 @@ function Circular_Barplot (data){
           .style("top", (d3.mouse(this)[1]+300) + "px")
   }
   var mouseleave = function(d) {
-    Tooltip.style("opacity", 0)
+    Tooltip
+      .style("opacity", 0)
+      .html("")
   }
   // Definiert die Farben des Graphen
   var color = d3.scaleOrdinal()
