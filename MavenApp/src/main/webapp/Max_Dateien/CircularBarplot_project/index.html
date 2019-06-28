@@ -2,16 +2,28 @@
 <meta charset="utf-8">
 <html>
 <head>
-  <title>Circular Barplot</title>
-<!-- Load d3.js and the geo projection plugin -->
-<script src="https://d3js.org/d3.v4.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
-<link rel="stylesheet" type="text/css" href="style.css">
+        <title>Circular Barplot</title>
+        <script src="https://d3js.org/d3.v4.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-        <div id="my_dataviz">
+        <div id="checkboxen">
+                        <input type="checkbox" class="checkbox" name="Java" checked><label>Java</label>
+                        <input type="checkbox" class="checkbox" name="C#" checked><label>C#</label>
+                        <input type="checkbox" class="checkbox" name="JavaScript" checked><label>JavaScript</label>
+                        <input type="checkbox" class="checkbox" name="C++" checked><label>C++</label>
+                        <input type="checkbox" class="checkbox" name="PHP" checked><label>PHP</label>
+                        <input type="checkbox" class="checkbox" name="C" checked><label>C</label>
+                        <input type="checkbox" class="checkbox" name="Python" checked><label>Python</label>
+                        <input type="checkbox" class="checkbox" name="ABAP" checked><label>ABAP</label>
+                        <input type="checkbox" class="checkbox" name="TypeScript" checked><label>TypeScript</label>
+                        <input type="checkbox" class="checkbox" name="Perl" checked><label>Perl</label>
+        </div>
+        <div id="circ_barplot">
                 <g></g>
         </div>
+        
 </body>
 <script src="CircularBarplot.js"></script>

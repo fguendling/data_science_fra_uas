@@ -20,7 +20,7 @@ var projection = d3.geoMercator()
 
 
 // Daten für die Kreise bereitstellen
-var markers = [
+var Data_circle = [
   {long: 11.581981, lat: 48.135125, name: "München", jobs: 90}, 
   {long: 9.182932, lat: 48.775846, name: "Stuttgart", jobs: 120},
   {long: 8.6821267, lat: 50.1109221, name: "Frankfurt am Main", jobs: 280},
@@ -71,7 +71,7 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
     var mousemove = function(d) {
       Tooltip
             .html(d.name + "<br>" + "Data Scientist Jobs: " + d.jobs)
-            .style("left", (d3.mouse(this)[0]+10) + "px")
+            .style("left", (d3.mouse(this)[0]+50) + "px")
             .style("top", (d3.mouse(this)[1]) + "px")
     }
     var mouseclick = function(d){
@@ -103,33 +103,84 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
     }
     
     var mouseleave = function(d) {
-      Tooltip.style("opacity", 0)
+      Tooltip
+      .style("opacity", 0)
+      .html("")
     }
-    
-    // Erstellung der Bubble auf der Karte
+    // Definiert die Farben des Graphen
+    var color = d3.scaleOrdinal()
+    .domain(Data_circle)
+    .range(["#a6cee3","#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"]);
+
+    // Erstellung der Bubbles auf der Karte
     svg
       .selectAll("myCircles")
-      .data(markers)
+      .data(Data_circle)
       .enter()
       .append("circle")
         .attr("cx", function(d){ return projection([d.long, d.lat])[0] })
         .attr("cy", function(d){ return projection([d.long, d.lat])[1] })
         .attr("r", function(d){ return size(d.jobs)})
         .attr("class", "circle")
-        .style("fill", "69b3a2")
+        .style("fill", function(d){return color(d['jobs'])})
         .attr("stroke", "#69b3a2")
         .attr("stroke-width", 3)
-        .attr("fill-opacity", .4)
+        .attr("fill-opacity", .9)
+        .html(Data_circle.name)
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("click",mouseclick)
       .on("mouseleave", mouseleave)
+
+    // Fügt eine Legende zu der Bubble Map hinzu
+
+    var valuesToShow = [15,100,300]
+    var xHeight = 150   // y-Achsen Wert
+    var xCircle = 100   // x-Achsen Wert
+    var xLabel = 180    // Label Wert. x-Achse
+    // Zeichnet Bubbles
+    svg
+      .selectAll("legend")
+      .data(valuesToShow)
+      .enter()
+      .append("circle")
+        .attr("cx", xCircle)
+        .attr("cy", function(d){ return xHeight - size(d) } )
+        .attr("r", function(d){ return size(d) })
+        .style("fill", "none")
+        .attr("stroke", "black")
+  
+    // Zeichnet gepunktete Linie
+    svg
+      .selectAll("legend")
+      .data(valuesToShow)
+      .enter()
+      .append("line")
+        .attr('x1', function(d){ return xCircle + size(d) } )
+        .attr('x2', xLabel)
+        .attr('y1', function(d){ return xHeight - size(d) } )
+        .attr('y2', function(d){ return xHeight - size(d) } )
+        .attr('stroke', 'black')
+        .style('stroke-dasharray', ('2,2'))
+  
+    // Fügt text zu der zuvor erstellten Linie hinzu
+    svg
+      .selectAll("legend")
+      .data(valuesToShow)
+      .enter()
+      .append("text")
+        .attr('x', xLabel)
+        .attr('y', function(d){ return xHeight - size(d) } )
+        .text( function(d){ return d } )
+        .style("font-size", 10)
+        .attr('alignment-baseline', 'middle')
 
 })}
 
 
 // Bar Chart
 
+// Legt den Abstand zum Rand des Containers fest
 var margin = { top:20 , right:0 , bottom:40 , left:30 }
 
 var screen_width;
@@ -140,7 +191,8 @@ var chart_container_height;
 
 var chart_width;
 var chart_height;
-// Datensatz
+
+// Datensätze
 var Stuttgart = [{"Nomen": "gemeinsam mit", "Anzahl":4},{"Nomen": "Weitere Informationen", "Anzahl":3},{"Nomen": "gute Kenntnisse", "Anzahl":3}]
 var München = [{"Nomen": "männliche Form", "Anzahl":3},{"Nomen": "interdisziplinären Teams", "Anzahl":3},{"Nomen": "familiar with", "Anzahl":2}]
 var Frankfurt_am_Main = [{"Nomen": "eng mit", "Anzahl":1},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
@@ -148,7 +200,7 @@ var Hamburg = [{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", 
 var Berlin = [{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2},{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2}]
 
 function draw_bar_chart(data){
-  // Achsen/Bars erstellen
+  // Achsen erstellen
   define_chart();
   var horizontal_scale = d3.scaleBand().domain(data.map(function(item){return item.Nomen})).rangeRound([0,chart_width]);
   var vertical_scale = d3.scaleLinear().domain([0,d3.max(data, function(item){return item.Anzahl})]).range([chart_height, 0]);
@@ -161,31 +213,29 @@ function draw_bar_chart(data){
     .select("#d3_wrapper svg g").attr("width", chart_width).attr("height", chart_height).attr("transform", "translate("+margin.left+", "+margin.top+")");
 
   var bar = chart.selectAll(".bar").data(data);
-  // Hover funktion einbauen
-  var update = bar.select("rect").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin})
-    .attr("y", function(d){return vertical_scale(d.Anzahl)})
-    .attr("width", bar_width)
-    .on("mouseover", function(d,i){
-        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Anzahl) + 15});
-      })
-    .attr("height", function(d){ return chart_height - vertical_scale(d.Anzahl)});
-    
-  chart.append("g").attr("class", "x axis").attr("transform", "translate(0,"+(chart_container_height - margin.bottom)+")").call(xAxis).call(adjustxAxis);
+  chart.append("g").attr("class", "x axis").attr("transform", "translate(0,"+((chart_container_height - margin.bottom)-20)+")").call(xAxis).call(adjustxAxis);
   chart.append("g").attr("class", "y axis").call(yAxis);
 
-  var g = bar.enter().append("g").attr("class", "bar");
+  // Farbe der Balken
+  var color = d3.scaleOrdinal()
+    .domain(data)
+    .range(["#a6cee3","#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"]);
 
+  // Balken erstellen
+  var g = bar.enter().append("g").attr("class", "bar");
   g.append("rect").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin})
     .attr("y", function(d){return vertical_scale(d.Anzahl)})
     .attr("width", bar_width)
     .on("mouseover", function(d,i){
-        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Anzahl) + 15});
+        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 - 1}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Anzahl) + 15});
       })
     .on("mouseout", function(d,i){
         d3.select(this.parentNode).selectAll("text").remove();
       })
     .transition().delay(function(d,i){return i * 10})
     .attr("height", function(d){ return chart_height - vertical_scale(d.Anzahl)})
+    .attr("fill", function(d){return color(d.Nomen)})
+    .attr("alignment-baseline", "middle")
     .attr("class", "Random_bar");
 
   var exit = bar.exit();
@@ -208,7 +258,7 @@ function adjustxAxis(selection){
 }
 // Button für Return zu Bubble Map
 function draw_button(){
-  d3.select(".chart").append('text').attr("class", "show_months").attr("x", 100).attr("y", 8).text("Zurück").on("click", function(d){
+  d3.select(".chart").append('text').attr("class", "Return_Button").attr("x", 130).attr("y", 10).text("Zurück zu Bubble Map").on("click", function(d){
     d3.select(".chart").selectAll("*").remove();
     d3.select(".chart").append("g");
     draw_bubble_map();
