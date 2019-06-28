@@ -71,7 +71,7 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
     var mousemove = function(d) {
       Tooltip
             .html(d.name + "<br>" + "Data Scientist Jobs: " + d.jobs)
-            .style("left", (d3.mouse(this)[0]+10) + "px")
+            .style("left", (d3.mouse(this)[0]+50) + "px")
             .style("top", (d3.mouse(this)[1]) + "px")
     }
     var mouseclick = function(d){
