@@ -29,10 +29,12 @@ public class BasicNLP {
 	private ResultSet rs;
 	private Connection conn;
 	private String jobresult;
+	private String location;
 
-	BasicNLP(String jobresult) throws IOException, ClassNotFoundException, SQLException {
+	BasicNLP(String jobresult, String location) throws IOException, ClassNotFoundException, SQLException {
 
 		this.jobresult = jobresult;
+		this.location = location;
 		// A model is usually loaded by providing a FileInputStream with a model to a
 		// constructor of the model class:
 		// this is used for tokenization
@@ -58,11 +60,15 @@ public class BasicNLP {
 		
 		String query = "select ausschreibungs_id, ausschreibungs_inhalt from test.Ausschreibungen"
 				+ " where suchbegriff_job=?"
+				+ " and suchbegriff_ort=?"
 				+ "and datum = (select max(datum) from test.Ausschreibungen)" 
+				
+				// vermutlich fehlt hier der ort - daher ist köln und stuttgart fehlerhaft
 				+ ";";
 
 		PreparedStatement my_select = conn.prepareStatement(query);
 		my_select.setString(1, this.jobresult);
+		my_select.setString(2, this.location);
 		rs = my_select.executeQuery();
 
 	}

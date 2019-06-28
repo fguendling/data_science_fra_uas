@@ -1,0 +1,30 @@
+[
+	{
+		"Count": 47,
+		"fachbegriff": "Data Scientist"
+	},
+	{
+		"Count": 45,
+		"fachbegriff": "Data Science"
+	},
+	{
+		"Count": 41,
+		"fachbegriff": "Machine Learning"
+	},
+	{
+		"Count": 22,
+		"fachbegriff": "Big Data"
+	},
+	{
+		"Count": 17,
+		"fachbegriff": "Data Mining"
+	},
+	{
+		"Count": 14,
+		"fachbegriff": "Data Analytics"
+	},
+	{
+		"Count": 14,
+		"fachbegriff": "Business Intelligence"
+	}
+]

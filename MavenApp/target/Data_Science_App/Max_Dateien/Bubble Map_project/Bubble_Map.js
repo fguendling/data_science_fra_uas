@@ -34,7 +34,7 @@ var projection = d3.geoMercator()
 	    $.ajax({
 	        'async': false,
 	        'global': false,
-	        'url': './Bubble_Map_Data.json',
+	        'url': 'Prepared_data/Bubble_Map_27-JUNE-2019.json',
 	        'dataType': "json",
 	        'success': function (data) {
 	            json = data;
@@ -53,6 +53,9 @@ markers[2].lat = '50.937738'; // Köln
 markers[2].long = '6.956315'; // Köln
 markers[3].lat = '48.775846'; // Stuttgart
 markers[3].long = '9.182932'; // Stuttgart
+markers[4].lat = '53.542137'; // Hamburg
+markers[4].long = '9.997127'; // Hamburg
+
 
 // Daten von github beziehen
 d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson", function(data){
@@ -110,6 +113,9 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
                 Stadt_Wahl = Frankfurt_am_Main;
                 break;
             case "Koeln":
+                Stadt_Wahl = Koeln;
+                break;
+            case "Hamburg":
                 Stadt_Wahl = Hamburg;
                 break;
             case "Berlin":
@@ -163,21 +169,89 @@ var chart_container_height;
 
 var chart_width;
 var chart_height;
-// Datensatz
-var Stuttgart = [{"Nomen": "gemeinsam mit", "Anzahl":4},{"Nomen": "Weitere Informationen", "Anzahl":3},{"Nomen": "gute Kenntnisse", "Anzahl":3}]
-var München = [{"Nomen": "männliche Form", "Anzahl":3},{"Nomen": "interdisziplinären Teams", "Anzahl":3},{"Nomen": "familiar with", "Anzahl":2}]
-var Frankfurt_am_Main = [{"Nomen": "eng mit", "Anzahl":1},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
-var Hamburg = [{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
-var Berlin = [{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2},{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2}]
 
+// Datensätze
+var Stuttgart = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': 'Prepared_data/Bubble_Map_Drill_Down_27-JUNE-2019_Stuttgart.json',
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})(); 
+
+
+var Koeln = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': 'Prepared_data/Bubble_Map_Drill_Down_27-JUNE-2019_Koeln.json',
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})(); 
+
+
+var Frankfurt_am_Main = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': 'Prepared_data/Bubble_Map_Drill_Down_27-JUNE-2019_Frankfurt.json',
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})(); 
+
+	
+var Hamburg = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': 'Prepared_data/Bubble_Map_Drill_Down_27-JUNE-2019_Hamburg.json',
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})(); 
+
+
+var Berlin = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': 'Prepared_data/Bubble_Map_Drill_Down_27-JUNE-2019_Berlin.json',
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})(); 
 
 
 function draw_bar_chart(data){
   // Achsen/Bars erstellen
   $('#dynamic_h2').text("Die häufigsten Fachbegriffe");
   define_chart();
-  var horizontal_scale = d3.scaleBand().domain(data.map(function(item){return item.Nomen})).rangeRound([0,chart_width]);
-  var vertical_scale = d3.scaleLinear().domain([0,d3.max(data, function(item){return item.Anzahl})]).range([chart_height, 0]);
+  var horizontal_scale = d3.scaleBand().domain(data.map(function(item){return item.fachbegriff})).rangeRound([0,chart_width]);
+  var vertical_scale = d3.scaleLinear().domain([0,d3.max(data, function(item){return item.Count})]).range([chart_height, 0]);
   var bar_width = chart_width / data.length - chart_width / data.length / 1.5;
   var bar_horizontal_margin = (chart_width / data.length - bar_width) / 2;
   var xAxis = d3.axisBottom(horizontal_scale);
@@ -188,30 +262,30 @@ function draw_bar_chart(data){
 
   var bar = chart.selectAll(".bar").data(data);
   // Hover funktion einbauen
-  var update = bar.select("rect").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin})
-    .attr("y", function(d){return vertical_scale(d.Anzahl)})
+  var update = bar.select("rect").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin})
+    .attr("y", function(d){return vertical_scale(d.Count)})
     .attr("width", bar_width)
     .on("mouseover", function(d,i){
-        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Anzahl) + 15});
+        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Count).attr("y", function(d){return vertical_scale(d.Count) + 15});
       })
-    .attr("height", function(d){ return chart_height - vertical_scale(d.Anzahl)});
+    .attr("height", function(d){ return chart_height - vertical_scale(d.Count)});
     
   chart.append("g").attr("class", "x axis").attr("transform", "translate(0,"+(chart_container_height - margin.bottom)+")").call(xAxis).call(adjustxAxis);
   chart.append("g").attr("class", "y axis").call(yAxis);
 
   var g = bar.enter().append("g").attr("class", "bar");
 
-  g.append("rect").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin})
-    .attr("y", function(d){return vertical_scale(d.Anzahl)})
+  g.append("rect").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin})
+    .attr("y", function(d){return vertical_scale(d.Count)})
     .attr("width", bar_width)
     .on("mouseover", function(d,i){
-        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Anzahl) + 15});
+        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Count).attr("y", function(d){return vertical_scale(d.Count) + 15});
       })
     .on("mouseout", function(d,i){
         d3.select(this.parentNode).selectAll("text").remove();
       })
     .transition().delay(function(d,i){return i * 10})
-    .attr("height", function(d){ return chart_height - vertical_scale(d.Anzahl)})
+    .attr("height", function(d){ return chart_height - vertical_scale(d.Count)})
     .attr("class", "Random_bar");
 
   var exit = bar.exit();

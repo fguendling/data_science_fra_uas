@@ -184,7 +184,7 @@ public class SimpleServlet extends HttpServlet {
 
 		BasicNLP myNLP;
 		try {
-			myNLP = new BasicNLP(job_result);
+			myNLP = new BasicNLP(job_result, place_result);
 			myNLP.create_pos();
 			System.out.println("pos tags erfolgreich erstellt.");
 		} catch (ClassNotFoundException e) {

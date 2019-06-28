@@ -28,7 +28,7 @@ select concat(vorgaenger, ' ', nachfolger) concatenated_result from
 		on 
 			pos.ausschreibungs_id = a.ausschreibungs_id
 		where a.suchbegriff_job = 'Data Scientist'
-        and a.suchbegriff_ort = 'Frankfurt am Main') successor_prep
+        and a.suchbegriff_ort = 'Berlin') successor_prep
         -- hier muss der Ort angepasst werden
 	inner join Ausschreibungs_Inhalt_POS
 	on successor_prep.successor_token = Ausschreibungs_Inhalt_POS.ausschreibungs_inhalt_pos_id) looking_good
@@ -38,12 +38,18 @@ where pos1 in ('NE', 'NN') and pos2 in ('NE', 'NN')) gruppe
 -- Daher tauchten auch nicht relevante Paare auf -
 -- Siehe 'not in' clause unten für Beispiele, die oft vorkamen.
 -- Hauptsächlich Berlin war hier das Problem
-where concatenated_result not in ('of the', 'LOOKING FOR', 'Experience with', 
+
+
+where concatenated_result not in ('of the', 'LOOKING FOR', 'Experience with',
+
 									'understanding of', 'years of', 'ABOUT THE', 
 									'committed to', 'variety of', 'with a',
                                     'and are', 'are committed', 'working with',
                                     'of our', 'team of', 'THE TEAM', 'WHERE YOUR', 
                                     'the world', 'YOUR EXPERTISE', 'diversity and')
+
+
 group by concatenated_result
-order by 1 desc Limit 10) res;
+
+order by 1 desc Limit 7) res;
 

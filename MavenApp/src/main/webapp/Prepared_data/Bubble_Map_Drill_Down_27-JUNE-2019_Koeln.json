@@ -1,42 +1,30 @@
 [
 	{
-		"Count": 135,
-		"fachbegriff": "Data Scientist"
-	},
-	{
-		"Count": 123,
+		"Count": 45,
 		"fachbegriff": "Machine Learning"
 	},
 	{
-		"Count": 90,
+		"Count": 36,
 		"fachbegriff": "Data Science"
 	},
 	{
-		"Count": 84,
+		"Count": 32,
+		"fachbegriff": "Data Scientist"
+	},
+	{
+		"Count": 24,
 		"fachbegriff": "Big Data"
 	},
 	{
-		"Count": 60,
+		"Count": 21,
 		"fachbegriff": "Data Analytics"
 	},
 	{
-		"Count": 39,
-		"fachbegriff": "Data Mining"
-	},
-	{
-		"Count": 36,
+		"Count": 16,
 		"fachbegriff": "deep learning"
 	},
 	{
-		"Count": 36,
-		"fachbegriff": "Business Intelligence"
-	},
-	{
-		"Count": 33,
-		"fachbegriff": "Data Scientists"
-	},
-	{
-		"Count": 27,
-		"fachbegriff": "REWE Group"
+		"Count": 12,
+		"fachbegriff": "Data Mining"
 	}
 ]
