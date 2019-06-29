@@ -90,7 +90,7 @@ path{
 	fill: steelblue;
 }
 
-.bar:hover {
+rect:hover {
 	fill: brown;
 }
 
@@ -273,13 +273,11 @@ stroke:#022330;
 fill: #13495d;
 }
 
-// Bilder..
-
+// Bilder
 .news{
     width: 100%;
     height: auto;
 	top: 50%;
-
 }
 
 .article {
@@ -311,5 +309,6 @@ img{
 
 .thumb p{
 	margin-top: 20px;
-	color: #fff;
+	color: black;
+	font-size: 18px;
 }

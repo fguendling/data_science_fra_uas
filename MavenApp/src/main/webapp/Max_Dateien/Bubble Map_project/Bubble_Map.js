@@ -18,17 +18,7 @@ var projection = d3.geoMercator()
     .scale(2020)                    // Zoom Einstellung
     .translate([ width/2, height/2 ])
 
-
-// Daten für die Kreise bereitstellen
-/*var markers = [
-  {long: 11.581981, lat: 48.135125, name: "München", jobs: 90}, 
-  {long: 9.182932, lat: 48.775846, name: "Stuttgart", jobs: 120},
-  {long: 8.6821267, lat: 50.1109221, name: "Frankfurt am Main", jobs: 280},
-  {long: 9.993682, lat: 53.551085, name: "Hamburg", jobs: 24},
-  {long: 13.404954, lat: 52.520007, name: "Berlin", jobs: 55}
-];
-*/
-    
+// Daten beziehen
     var markers = (function () {
 	    var json = null;
 	    $.ajax({
@@ -43,10 +33,9 @@ var projection = d3.geoMercator()
 	    return json;
 	})(); 
     	
-    	
     	// Hinzufügen der Koordinaten
 markers[0].lat = '52.520007';  // Berlin
-markers[0].long = '13.404954';  // Berlin
+markers[0].long = '13.134954';  // Berlin
 markers[1].lat = '50.1109221'; // Frankfurt
 markers[1].long = '8.6821267'; // Frankfurt
 markers[2].lat = '50.937738'; // Köln 
@@ -154,11 +143,53 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
       .on("click",mouseclick)
       .on("mouseleave", mouseleave)
 
+var valuesToShow = [15,100,300]
+var xHeight = 150   // y-Achsen Wert
+var xCircle = 52   // x-Achsen Wert
+var xLabel = 118    // Label Wert. x-Achse
+// Zeichnet Bubbles
+svg
+  .selectAll("legend")
+  .data(valuesToShow)
+  .enter()
+  .append("circle")
+    .attr("cx", xCircle)
+    .attr("cy", function(d){ return xHeight - size(d) } )
+    .attr("r", function(d){ return size(d) })
+    .style("fill", "none")
+    .attr("stroke", "black")
+
+// Zeichnet eine gepunktete Linie
+svg
+  .selectAll("legend")
+  .data(valuesToShow)
+  .enter()
+  .append("line")
+    .attr('x1', function(d){ return xCircle + size(d) } )
+    .attr('x2', xLabel)
+    .attr('y1', function(d){ return xHeight - size(d) } )
+    .attr('y2', function(d){ return xHeight - size(d) } )
+    .attr('stroke', 'black')
+    .style('stroke-dasharray', ('2,2'))
+
+// Fügt Text zu der zuvor erstellten Linie hinzu
+svg
+  .selectAll("legend")
+  .data(valuesToShow)
+  .enter()
+  .append("text")
+    .attr('x', xLabel)
+    .attr('y', function(d){ return xHeight - size(d) } )
+    .text( function(d){ return d } )
+    .style("font-size", 10)
+    .attr('alignment-baseline', 'middle')
+    
 })}
 
 
 // Bar Chart
 
+//Legt den Abstand zum Rand des Containers fest
 var margin = { top:20 , right:0 , bottom:40 , left:30 }
 
 var screen_width;
@@ -248,7 +279,7 @@ var Berlin = (function () {
 
 function draw_bar_chart(data){
   // Achsen/Bars erstellen
-  $('#dynamic_h2').text("Die häufigsten Fachbegriffe");
+  $('#dynamic_h2').text("Die häufigsten Fachbegriffe für die ausgewählte Stadt");
   define_chart();
   var horizontal_scale = d3.scaleBand().domain(data.map(function(item){return item.fachbegriff})).rangeRound([0,chart_width]);
   var vertical_scale = d3.scaleLinear().domain([0,d3.max(data, function(item){return item.Count})]).range([chart_height, 0]);
@@ -261,6 +292,9 @@ function draw_bar_chart(data){
     .select("#d3_wrapper svg g").attr("width", chart_width).attr("height", chart_height).attr("transform", "translate("+margin.left+", "+margin.top+")");
 
   var bar = chart.selectAll(".bar").data(data);
+  chart.append("g").attr("class", "x axis").attr("transform", "translate(0,"+((chart_container_height - margin.bottom)-20)+")").call(xAxis).call(adjustxAxis);
+  chart.append("g").attr("class", "y axis").call(yAxis);
+
   // Hover funktion einbauen
   var update = bar.select("rect").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin})
     .attr("y", function(d){return vertical_scale(d.Count)})
@@ -269,12 +303,9 @@ function draw_bar_chart(data){
         d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Count).attr("y", function(d){return vertical_scale(d.Count) + 15});
       })
     .attr("height", function(d){ return chart_height - vertical_scale(d.Count)});
-    
-  chart.append("g").attr("class", "x axis").attr("transform", "translate(0,"+(chart_container_height - margin.bottom)+")").call(xAxis).call(adjustxAxis);
-  chart.append("g").attr("class", "y axis").call(yAxis);
 
+  //Balken erstellen
   var g = bar.enter().append("g").attr("class", "bar");
-
   g.append("rect").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin})
     .attr("y", function(d){return vertical_scale(d.Count)})
     .attr("width", bar_width)
@@ -291,6 +322,7 @@ function draw_bar_chart(data){
   var exit = bar.exit();
     exit.select("rect").transition().duration("1000").attr("height", "0");
 }
+
 // Dimension des Charts bestimmen
 function define_chart(){
   screen_width = get_screen_width_height().width;
