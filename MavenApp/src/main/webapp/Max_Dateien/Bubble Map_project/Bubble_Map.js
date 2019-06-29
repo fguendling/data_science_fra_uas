@@ -124,26 +124,22 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
       .style("opacity", 0)
       .html("")
     }
-    // Definiert die Farben des Graphen
-    var color = d3.scaleOrdinal()
-    .domain(Data_circle)
-    .range(["#a6cee3","#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"]);
 
     // Erstellung der Bubbles auf der Karte
     svg
       .selectAll("myCircles")
-      .data(Data_circle)
+      .data(markers)
       .enter()
       .append("circle")
         .attr("cx", function(d){ return projection([d.long, d.lat])[0] })
         .attr("cy", function(d){ return projection([d.long, d.lat])[1] })
         .attr("r", function(d){ return size(d.Count)})
         .attr("class", "circle")
-        .style("fill", function(d){return color(d['jobs'])})
+        .style("fill", "69b3a2")
+
         .attr("stroke", "#69b3a2")
         .attr("stroke-width", 3)
-        .attr("fill-opacity", .9)
-        .html(Data_circle.name)
+        .attr("fill-opacity", .4)
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("click",mouseclick)

@@ -168,7 +168,7 @@ path{
 	margin-left: 20px;
 	margin-right: 20px;
 	text-align: center;
-	font-size: 35px;
+	font-size: 30px;
 	padding-top:100px;
 }
 
@@ -193,6 +193,24 @@ section{
 	padding-top: 30px;
 }
 
+#checkboxen{
+	font-size: 14px;
+	text-align: center;
+	display: block;
+	margin: auto;
+	padding-top: 50px;
+}
+
+.checkbox {
+	padding-left: 10px;
+}
+
+#circ_barplot svg{
+	padding-top: 0px;
+}
+
+
+
 table {
 	padding-top: 50px;
     margin: 0px auto;
@@ -206,7 +224,6 @@ section#sec_3  {}
 #about_section {
 	display: block;
 	text-align: center;
-	margin-top: 15em;
 	
 }
 

@@ -1,18 +1,33 @@
+function barplot() {
+	$(document).ready(
+			function() {
+	
 // Deklariert zwei Arrays, eines für die gelöschten (aka die leeren Checkboxen) und eines mit dem Datensatz
+
 var deleted = [];
-var data = [{"Sprache": "Java", "Anzahl": 285},{"Sprache": "C#","Anzahl": 148},{"Sprache": "JavaScript","Anzahl": 97},{"Sprache": "C++","Anzahl": 76},{"Sprache": "PHP","Anzahl": 47},{"Sprache": "C","Anzahl": 35},{"Sprache": "Python","Anzahl": 24},{"Sprache": "ABAP","Anzahl": 19},{"Sprache": "TypeScript","Anzahl": 18},{"Sprache": "Perl","Anzahl": 9}];
-// Initialisiert den Circular Barplot
-Circular_Barplot (data);
+var data = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': 'Prepared_data/Softwaredeveloper_Circular_27-JUNE-2019.json',
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})(); 
 
 // Funktion die überprüft, ob die Checkboxen nun gecheckt oder nicht sind und verändert dementsprechend den Datensatz, um den Graphen zu aktualisieren
 function checkdata(data){
-  var checkbox=document.getElementsByTagName("input");
+  var checkbox=document.getElementsByClassName("checkbox");
   for(i=0;i<checkbox.length;i++){
     for(j=0;j<data.length;j++){
-      if(checkbox[i].name == data[j].Sprache){
+      if(checkbox[i].name == data[j].token){
         if(checkbox[i].checked ==false){
-          deleted.push({"Sprache":data[j].Sprache,"Anzahl":data[j].Anzahl})
-          data.splice(j,1,)
+          deleted.push({"token":data[j].token,"token_count":data[j].token_count})
+          data.splice(j,1)
           if((i==checkbox.length)) {
           return data
           }
@@ -27,9 +42,9 @@ function checkdata(data){
         }
       } else if(j<=data.length && (checkbox[i].checked==true) ){
           for (k=0;k<deleted.length;k++){
-              if(checkbox[i].name == deleted[k].Sprache && deleted.length != 0){
-                data.push({"Sprache":deleted[k].Sprache,"Anzahl":deleted[k].Anzahl})
-                deleted.splice(k,1,)
+              if(checkbox[i].name == deleted[k].token && deleted.length != 0){
+                data.push({"token":deleted[k].token,"token_count":deleted[k].token_count})
+                deleted.splice(k,1)
                 if((i==checkbox.length)) {
                   return data
                   }
@@ -46,14 +61,14 @@ function checkdata(data){
 }
 
 // Zeichnet den Graphen
-function Circular_Barplot (data){
+function Circular_Barplot(data){
 
   // Überprüft den Datensatz zu Beginn
   var data = checkdata(data);
 
   // Sortiert die Daten
   data.sort(function(a,b){
-    return b.Anzahl - a.Anzahl
+    return b.token_count - a.token_count
   });
 
   // Setzt die Dimension und den Rand des Graphen fest
@@ -74,10 +89,10 @@ function Circular_Barplot (data){
   // Graphen Skala
   var x = d3.scaleBand()
     .range([0, 2 * Math.PI])
-    .domain(data.map(function(d) { return d.Sprache; }));
+    .domain(data.map(function(d) { return d.token; }));
   var y = d3.scaleRadial()
     .range([innerRadius, outerRadius])
-    .domain([0, d3.max(data, function(d){return +d.Anzahl;})]);
+    .domain([0, d3.max(data, function(d){return +d.token_count;})]);
 
   // Erstellt Tooltip
   var Tooltip = d3.select("#circ_barplot")
@@ -97,9 +112,9 @@ function Circular_Barplot (data){
   }
   var mousemove = function(d) {
     Tooltip
-          .html("Anzahl: " + d.Anzahl)
-          .style("left", (d3.mouse(this)[0]+350) + "px")
-          .style("top", (d3.mouse(this)[1]+300) + "px")
+          .html("token_count: " + d.token_count)
+          .style("left", (d3.mouse(this)[0]+500) + "px")
+          .style("top", (d3.mouse(this)[1] + (window.innerHeight*5)-250) + "px")
   }
   var mouseleave = function(d) {
     Tooltip
@@ -117,12 +132,12 @@ function Circular_Barplot (data){
   .data(data)
   .enter()
   .append("path")
-    .attr("fill", function(d){return color(d['Sprache'])})
+    .attr("fill", function(d){return color(d['token'])})
     .attr("d", d3.arc()
         .innerRadius(innerRadius)
-        .outerRadius(function(d) { return y(d['Anzahl']); })
-        .startAngle(function(d) { return x(d.Sprache); })
-        .endAngle(function(d) { return x(d.Sprache) + x.bandwidth(); })
+        .outerRadius(function(d) { return y(d['token_count']); })
+        .startAngle(function(d) { return x(d.token); })
+        .endAngle(function(d) { return x(d.token) + x.bandwidth(); })
         .padAngle(0.01)
         .padRadius(innerRadius))
     .on("mouseover",mouseover)
@@ -135,11 +150,11 @@ function Circular_Barplot (data){
     .data(data)
     .enter()
     .append("g")
-      .attr("text-anchor", function(d) { return (x(d.Sprache) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
-      .attr("transform", function(d) { return "rotate(" + ((x(d.Sprache) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (y(d['Anzahl'])+10) + ",0)"; })
+      .attr("text-anchor", function(d) { return (x(d.token) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
+      .attr("transform", function(d) { return "rotate(" + ((x(d.token) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (y(d['token_count'])+10) + ",0)"; })
     .append("text")
-      .text(function(d){return(d.Sprache)})
-      .attr("transform", function(d) { return (x(d.Sprache) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
+      .text(function(d){return(d.token)})
+      .attr("transform", function(d) { return (x(d.token) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
       .style("font-size", "16px")
       .style("font-weight", "bold")
       .attr("alignment-baseline", "middle")
@@ -153,10 +168,7 @@ function Circular_Barplot (data){
   d3.selectAll(".checkbox").on("change",update);
 }
 
+//Initialisiert den Circular Barplot
+Circular_Barplot(data);
 
-  
-
-
-
-
-
+})}

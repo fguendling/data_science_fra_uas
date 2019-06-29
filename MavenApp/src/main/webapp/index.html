@@ -1,30 +1,24 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <title>Data Science App</title>
-<!--  
-<script src="https://d3js.org/d3.v3.js"></script>
--->
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-
-<!-- changed jquery version for test of sunburst chart 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"
-	integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-	crossorigin="anonymous"></script>
--->
-<script type="text/javascript"
-	src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="another_script.js"></script>
 <script src="drill_down.js"></script>
 <script src="d3_script.js"></script>
 <script src="Max_Dateien/Bubble Map_project/Bubble_Map.js"></script>
+<script src="Max_Dateien/CircularBarplot_project/CircularBarplot.js"></script>
 <link rel="stylesheet" type="text/css" href="awesome.css">
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
-<body onpageshow="draw_bubble_map(); chart_2_v4(); chart3()">
+<body onpageshow="draw_bubble_map(); chart_2_v4(); barplot()">
+
 	<div id="particles-js"></div>
 	<script type="text/javascript" src="Dung_Content/particles.js"></script>
 	<script type="text/javascript" src="Dung_Content/app.js"></script>
@@ -44,37 +38,39 @@
 		<h1>DATA SCIENCE PROJECT</h1>
 	</div>
 
+<!-- 
 	<script data-main="bubblemap.js" src="require.2.3.6.js"></script>
+ -->
 
-<section class="title">
-	<div id=sec_09>
-	<h2>Crawler and NLP</h2>
-		<form name="CrawlerAndNLP_Form" method="post" action="JavaScript:myPost()">
-	<table>
-		<tr>
-			<td>URL:</td>
-			<td><input name="url" type="text" size="75" 
-			value="https://de.indeed.com/jobs?q=Data+Scientist&l=Frankfurt+am+Main" /></td>
-		</tr>
-		<tr>
-			<td>Job:</td>
-			<td><input name="job" type="text" size="75"
-			value="Data Scientist" /></td>
-		</tr>
-		<tr>
-			<td>Place:</td>
-			<td><input name="place" type="text" size="75"
-			value="Frankfurt am Main" /></td>
-		</tr>
-		<tr>
-			<td colspan="2" align="center">
-			<input type="submit"
-				name="submit" />
-				</td>
-		</tr>
-	</table>
-</form>
-</div>
+	<section class="title">
+		<div id=sec_09>
+		<h2>Crawler and NLP</h2>
+			<form name="CrawlerAndNLP_Form" method="post" action="JavaScript:myPost()">
+		<table>
+			<tr>
+				<td>URL:</td>
+				<td><input name="url" type="text" size="75" 
+				value="https://de.indeed.com/jobs?q=Data+Scientist&l=Frankfurt+am+Main" /></td>
+			</tr>
+			<tr>
+				<td>Job:</td>
+				<td><input name="job" type="text" size="75"
+				value="Data Scientist" /></td>
+			</tr>
+			<tr>
+				<td>Place:</td>
+				<td><input name="place" type="text" size="75"
+				value="Frankfurt am Main" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+				<input type="submit"
+					name="submit" />
+					</td>
+			</tr>
+		</table>
+	</form>
+	</div>
 	</section>
 
 
@@ -99,14 +95,26 @@
 	</section>
 	
 	<section id="sec_3" class="title">
-		<h2>Häufigkeit von gesuchten Programmiersprachen, bei Suche nach "Softwareentwickler", Deutschlandweit</h2>
-		<div id="todo">
-		Waiting for Max</div>	
-		
-		</section>
+		<h2>Häufigkeit von Programmiersprachen, bei Suche nach "Softwareentwickler", In Frankfurt</h2>
+		        <div id="checkboxen">
+                        <input type="checkbox" class="checkbox" name="Java" checked><label> Java     </label>
+                        <input type="checkbox" class="checkbox" name="C#" checked><label> C#     </label>
+                        <input type="checkbox" class="checkbox" name="C++" checked><label> C++     </label>
+                        <input type="checkbox" class="checkbox" name="JavaScript" checked><label> JavaScript     </label>
+                        <input type="checkbox" class="checkbox" name="C" checked><label> C     </label>
+                        <input type="checkbox" class="checkbox" name="PHP" checked><label> PHP     </label>
+                        <input type="checkbox" class="checkbox" name="Python" checked><label> Python     </label>
+                        <input type="checkbox" class="checkbox" name="TypeScript" checked><label> TypeScript     </label>
+                        <input type="checkbox" class="checkbox" name="ABAP" checked><label> ABAP     </label>
+                        <input type="checkbox" class="checkbox" name="SPS" checked><label> SPS     </label>
+        </div>
+        <div id="circ_barplot">
+                <g></g>
+        </div>
+	</section>
 	
 	<section id="about_section" class="title">
-			<h2>Das Team</h2>
+		<h2>Das Team</h2>
 			<div class="news">
 			
 				<div class="article">
@@ -131,7 +139,6 @@
 				</div>
 	    </div>
 	</div>
-		
 	</section>
 
 	<footer>
@@ -141,5 +148,7 @@
 			</div>
 		</div>
 	</footer>
+	
 </body>
+
 </html>

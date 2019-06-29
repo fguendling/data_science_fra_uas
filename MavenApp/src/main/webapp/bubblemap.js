@@ -1,3 +1,4 @@
+// wird nicht verwendet
 function bubblemap() {
 
 	require( ["d3_v4/d3.min.js"], function(d3) {   
