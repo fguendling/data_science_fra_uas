@@ -45,6 +45,18 @@ markers[3].long = '9.182932'; // Stuttgart
 markers[4].lat = '53.542137'; // Hamburg
 markers[4].long = '9.997127'; // Hamburg
 
+<<<<<<< HEAD
+=======
+// Daten für die Kreise bereitstellen
+var Data_circle = [
+  {long: 11.581981, lat: 48.135125, name: "München", jobs: 90}, 
+  {long: 9.182932, lat: 48.775846, name: "Stuttgart", jobs: 120},
+  {long: 8.6821267, lat: 50.1109221, name: "Frankfurt am Main", jobs: 280},
+  {long: 9.993682, lat: 53.551085, name: "Hamburg", jobs: 24},
+  {long: 13.404954, lat: 52.520007, name: "Berlin", jobs: 55}
+];
+>>>>>>> master
+
 // Daten von github beziehen
 d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson", function(data){
 
@@ -87,9 +99,15 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
     }
     var mousemove = function(d) {
       Tooltip
+<<<<<<< HEAD
             .html(d.Ort + "<br>" + "Data Scientist Jobs: " + d.Count)
             .style("left", (d3.mouse(this)[0]+400) + "px")
             .style("top", (d3.mouse(this)[1]) + ((window.innerHeight*2)+150) + "px")
+=======
+            .html(d.name + "<br>" + "Data Scientist Jobs: " + d.jobs)
+            .style("left", (d3.mouse(this)[0]+50) + "px")
+            .style("top", (d3.mouse(this)[1]) + "px")
+>>>>>>> master
     }
     var mouseclick = function(d){
           d3.select("#BubbleMap").selectAll("*").remove();
@@ -149,6 +167,7 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
       .on("click",mouseclick)
       .on("mouseleave", mouseleave)
 
+<<<<<<< HEAD
 var valuesToShow = [15,100,300]
 var xHeight = 150   // y-Achsen Wert
 var xCircle = 52   // x-Achsen Wert
@@ -190,12 +209,61 @@ svg
     .style("font-size", 10)
     .attr('alignment-baseline', 'middle')
     
+=======
+    // Fügt eine Legende zu der Bubble Map hinzu
+
+    var valuesToShow = [15,100,300]
+    var xHeight = 150   // y-Achsen Wert
+    var xCircle = 100   // x-Achsen Wert
+    var xLabel = 180    // Label Wert. x-Achse
+    // Zeichnet Bubbles
+    svg
+      .selectAll("legend")
+      .data(valuesToShow)
+      .enter()
+      .append("circle")
+        .attr("cx", xCircle)
+        .attr("cy", function(d){ return xHeight - size(d) } )
+        .attr("r", function(d){ return size(d) })
+        .style("fill", "none")
+        .attr("stroke", "black")
+  
+    // Zeichnet gepunktete Linie
+    svg
+      .selectAll("legend")
+      .data(valuesToShow)
+      .enter()
+      .append("line")
+        .attr('x1', function(d){ return xCircle + size(d) } )
+        .attr('x2', xLabel)
+        .attr('y1', function(d){ return xHeight - size(d) } )
+        .attr('y2', function(d){ return xHeight - size(d) } )
+        .attr('stroke', 'black')
+        .style('stroke-dasharray', ('2,2'))
+  
+    // Fügt text zu der zuvor erstellten Linie hinzu
+    svg
+      .selectAll("legend")
+      .data(valuesToShow)
+      .enter()
+      .append("text")
+        .attr('x', xLabel)
+        .attr('y', function(d){ return xHeight - size(d) } )
+        .text( function(d){ return d } )
+        .style("font-size", 10)
+        .attr('alignment-baseline', 'middle')
+
+>>>>>>> master
 })}
 
 
 // Bar Chart
 
+<<<<<<< HEAD
 //Legt den Abstand zum Rand des Containers fest
+=======
+// Legt den Abstand zum Rand des Containers fest
+>>>>>>> master
 var margin = { top:20 , right:0 , bottom:40 , left:30 }
 
 var screen_width;
@@ -208,6 +276,7 @@ var chart_width;
 var chart_height;
 
 // Datensätze
+<<<<<<< HEAD
 var Stuttgart = (function () {
     var json = null;
     $.ajax({
@@ -286,6 +355,16 @@ var Berlin = (function () {
 function draw_bar_chart(data){
   // Achsen/Bars erstellen
   $('#dynamic_h2').text("Die häufigsten Fachbegriffe für die ausgewählte Stadt");
+=======
+var Stuttgart = [{"Nomen": "gemeinsam mit", "Anzahl":4},{"Nomen": "Weitere Informationen", "Anzahl":3},{"Nomen": "gute Kenntnisse", "Anzahl":3}]
+var München = [{"Nomen": "männliche Form", "Anzahl":3},{"Nomen": "interdisziplinären Teams", "Anzahl":3},{"Nomen": "familiar with", "Anzahl":2}]
+var Frankfurt_am_Main = [{"Nomen": "eng mit", "Anzahl":1},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
+var Hamburg = [{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2},{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2}]
+var Berlin = [{"Nomen": "zukunftsweisenden Technologien", "Anzahl":2},{"Nomen": "agilen Teams", "Anzahl":2},{"Nomen": "gute Deutsch-", "Anzahl":2}]
+
+function draw_bar_chart(data){
+  // Achsen erstellen
+>>>>>>> master
   define_chart();
   var horizontal_scale = d3.scaleBand().domain(data.map(function(item){return item.fachbegriff})).rangeRound([0,chart_width]);
   var vertical_scale = d3.scaleLinear().domain([0,d3.max(data, function(item){return item.Count})]).range([chart_height, 0]);
@@ -300,6 +379,7 @@ function draw_bar_chart(data){
   var bar = chart.selectAll(".bar").data(data);
   chart.append("g").attr("class", "x axis").attr("transform", "translate(0,"+((chart_container_height - margin.bottom)-20)+")").call(xAxis).call(adjustxAxis);
   chart.append("g").attr("class", "y axis").call(yAxis);
+<<<<<<< HEAD
 
   // Hover funktion einbauen
   var update = bar.select("rect").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin})
@@ -317,12 +397,33 @@ function draw_bar_chart(data){
     .attr("width", bar_width)
     .on("mouseover", function(d,i){
         d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.fachbegriff) + bar_horizontal_margin + bar_width/2 + 5}).text(d.Count).attr("y", function(d){return vertical_scale(d.Count) + 15});
+=======
+
+  // Farbe der Balken
+  var color = d3.scaleOrdinal()
+    .domain(data)
+    .range(["#a6cee3","#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"]);
+
+  // Balken erstellen
+  var g = bar.enter().append("g").attr("class", "bar");
+  g.append("rect").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin})
+    .attr("y", function(d){return vertical_scale(d.Anzahl)})
+    .attr("width", bar_width)
+    .on("mouseover", function(d,i){
+        d3.select(this.parentNode).append("text").attr("x", function(d,i) {return horizontal_scale(d.Nomen) + bar_horizontal_margin + bar_width/2 - 1}).text(d.Anzahl).attr("y", function(d){return vertical_scale(d.Anzahl) + 15});
+>>>>>>> master
       })
     .on("mouseout", function(d,i){
         d3.select(this.parentNode).selectAll("text").remove();
       })
     .transition().delay(function(d,i){return i * 10})
+<<<<<<< HEAD
     .attr("height", function(d){ return chart_height - vertical_scale(d.Count)})
+=======
+    .attr("height", function(d){ return chart_height - vertical_scale(d.Anzahl)})
+    .attr("fill", function(d){return color(d.Nomen)})
+    .attr("alignment-baseline", "middle")
+>>>>>>> master
     .attr("class", "Random_bar");
 
   var exit = bar.exit();

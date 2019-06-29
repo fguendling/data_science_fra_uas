@@ -1,5 +1,5 @@
 .circle:hover{
-  fill: rgb(50, 202, 63);
+  
   stroke: black;
   stroke-width: 4px;
 }
@@ -13,21 +13,22 @@ html {
 
 .chart text {
   fill: #6f7f87;
-  font: 10px sans-serif;
-  text-anchor: end;
+  font: 12px sans-serif;
   font-weight: bold;
 }
-
 .axis path,
 .axis line {
 stroke: #000;
 shape-rendering: crispEdges;
 }
-
+.Return_Button:hover {
+  cursor: pointer;
+}
 .Random_bar {
-fill: #14a7e1;
 stroke:#022330;
+font-weight: bold;
+text-align: center;
 }
 .Random_bar:hover {
-fill: #13495d;
+  fill: #13495d;
 }
