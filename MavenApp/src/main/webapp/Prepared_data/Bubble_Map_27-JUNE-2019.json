@@ -1,22 +1,22 @@
 [
 	{
-		"Count": 222,
+		"Count": 217,
 		"Ort": "Berlin"
 	},
 	{
-		"Count": 85,
+		"Count": 68,
 		"Ort": "Frankfurt am Main"
 	},
 	{
-		"Count": 66,
+		"Count": 58,
 		"Ort": "Koeln"
 	},
 	{
-		"Count": 72,
+		"Count": 47,
 		"Ort": "Stuttgart"
 	},
 	{
-		"Count": 83,
+		"Count": 82,
 		"Ort": "Hamburg"
-	}	
+	}
 ]

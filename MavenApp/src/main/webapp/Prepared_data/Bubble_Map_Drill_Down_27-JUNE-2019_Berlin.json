@@ -4,19 +4,19 @@
 		"fachbegriff": "Machine Learning"
 	},
 	{
-		"Count": 123,
+		"Count": 120,
 		"fachbegriff": "Data Scientist"
 	},
 	{
-		"Count": 108,
+		"Count": 104,
 		"fachbegriff": "Data Science"
 	},
 	{
-		"Count": 50,
+		"Count": 48,
 		"fachbegriff": "Computer Science"
 	},
 	{
-		"Count": 45,
+		"Count": 40,
 		"fachbegriff": "Big Data"
 	},
 	{
@@ -25,6 +25,6 @@
 	},
 	{
 		"Count": 33,
-		"fachbegriff": "Data Scientists"
+		"fachbegriff": "Data Analytics"
 	}
 ]

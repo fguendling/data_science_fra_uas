@@ -1,7 +1,16 @@
+/* 
+ * 
+ * 
+ * 
+ *  Diese Klasse erzeugt Tokens und POS Tags. Sie basiert auf Apache OpenNLP.
+ * 
+ * 
+ * 
+ * 
+ */
 package data.science;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -10,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
@@ -21,6 +29,9 @@ public class BasicNLP {
 	private Tokenizer tokenizer;
 	private POSTaggerME tagger;
 	private String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
+	
+	// diese Datenbank wird nach der Vorstellung des Projekts abgeschaltet.
+	// Ein Dump der Datenbank ist auf GitHub zu finden.
 	private String DB_URL = "jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306";
 	private String USER = "data_science";
 	private String PASS = "data_science_pw";
@@ -30,14 +41,16 @@ public class BasicNLP {
 	private Connection conn;
 	private String jobresult;
 	private String location;
-
+	
+	// Konstruktor
 	BasicNLP(String jobresult, String location) throws IOException, ClassNotFoundException, SQLException {
 
 		this.jobresult = jobresult;
 		this.location = location;
-		// A model is usually loaded by providing a FileInputStream with a model to a
-		// constructor of the model class:
+
 		// this is used for tokenization
+		// Das Model muss heruntergeladen werden und diese Stelle muss angepasst werden
+		// http://opennlp.sourceforge.net/models-1.5/
 		InputStream modelIn = new FileInputStream("/Users/felix/eclipse-workspace/de-token.bin");
 		TokenizerModel m = new TokenizerModel(modelIn);
 
@@ -45,6 +58,7 @@ public class BasicNLP {
 		tokenizer = new TokenizerME(m);
 
 		// part-of-speech detection
+		// muss ebenfalls heruntegeladen werden.
 		InputStream POSModel = new FileInputStream("/Users/felix/eclipse-workspace/de-pos-maxent.bin");
 		POSModel model = new POSModel(POSModel);
 		tagger = new POSTaggerME(model);
@@ -52,29 +66,28 @@ public class BasicNLP {
 		// Database connection...
 		conn = null;
 		Statement stmt = null;
-
 		Class.forName("org.mariadb.jdbc.Driver");
 		conn = DriverManager.getConnection("jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306",
 				USER, PASS);
 		Statement select = conn.createStatement();
 		
+		// Holt die aktuellsten Ausschreibungen gefiltert nach Ort und Suchbegriff 
+		// diese Werden in create_pos() per NLP verarbeitet
 		String query = "select ausschreibungs_id, ausschreibungs_inhalt from test.Ausschreibungen"
 				+ " where suchbegriff_job=?"
 				+ " and suchbegriff_ort=?"
-				+ "and datum = (select max(datum) from test.Ausschreibungen)" 
-				
-				// vermutlich fehlt hier der ort - daher ist köln und stuttgart fehlerhaft
+				+ "and datum = (select max(datum) from test.Ausschreibungen)" 				
 				+ ";";
 
 		PreparedStatement my_select = conn.prepareStatement(query);
 		my_select.setString(1, this.jobresult);
 		my_select.setString(2, this.location);
 		rs = my_select.executeQuery();
-
 	}
 
 	public void create_pos() throws IOException, SQLException {
-
+	// erstellt Tokens und POS Tags und schreibt diese in eine Datenbanktabelle.
+		
 		while (rs.next()) {
 			Ausschreibungs_ID = rs.getInt("ausschreibungs_ID");
 			content = rs.getString("ausschreibungs_inhalt");
@@ -92,7 +105,6 @@ public class BasicNLP {
 				insert.setString(2, words[i]);
 				insert.setString(3, tags[i]);
 				insert.execute();
-
 			}
 		}
 	}

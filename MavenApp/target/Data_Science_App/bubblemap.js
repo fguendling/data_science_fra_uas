@@ -1,4 +1,6 @@
 // wird nicht verwendet
+// stattdessen wird das JS in /Max_Dateien/Bubble_Map_Project verwendet.
+
 function bubblemap() {
 
 	require( ["d3_v4/d3.min.js"], function(d3) {   

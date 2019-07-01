@@ -328,5 +328,11 @@ img{
 
 .thumb p{
 	margin-top: 20px;
-	color: #fff;
+	color: black;
+	font-size: 30px;
 }
+
+.Return_Button:hover {
+  cursor: pointer;
+}
+

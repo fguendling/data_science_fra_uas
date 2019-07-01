@@ -1,3 +1,13 @@
+/*
+ * 
+ * 
+ * 
+ * SimpleServlet wird verwendet, um eine Verbindung zum Backend (Crawler, NLP, Datenbank) herzustellen.
+ * 
+ * 
+ * 
+ * 
+ */
 package data.science;
 
 import java.io.IOException;
@@ -27,12 +37,14 @@ public class SimpleServlet extends HttpServlet {
 	static final String USER = "data_science";
 	static final String PASS = "data_science_pw";
 
+	// die doGet Methode wird hauptsächlich für einen Drill Down im zweiten Chart verwendet.
+	// (Anzeige von detaillierten Ausschreibungstexten bei Klick auf die Balken, die angeben, wie viele Jahre Berufserfahrung gesucht werden)
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// Beispiel:
-		// Auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc) an das Backend übergeben werden
+		// Auf diesem Weg können Paramter (?Vorname=xxx&Nachname=yyy etc) 
+		// an das Backend übergeben werden. Beispiel:
 		// out.println(request.getParameter("Vorname"));
 		// out.println(request.getParameter("Nachname"));
 		
@@ -51,7 +63,7 @@ public class SimpleServlet extends HttpServlet {
 			my_conn = DriverManager.getConnection("jdbc:mariadb://ec2-52-59-2-90.eu-central-1.compute.amazonaws.com:3306",
 					USER, PASS);
 		
-		// es wird geprüft ob parameter übergeben werden in der url
+		// es wird geprüft, ob Parameter in der URL übergeben werden.
 		// die parameter werden im drill_down.js festgelegt.
 		if (request.getParameter("condition") != null) {
 			String cond = request.getParameter("condition");
@@ -60,15 +72,20 @@ public class SimpleServlet extends HttpServlet {
 			String result_of_query = "";
 						
 			PreparedStatement preparedStmt = my_conn.prepareStatement(
+					// hier sollte idealerweise das SQL File eingelesen werden, 
+					// hier wurde das SQL einfach eingefügt.
+					// vgl. MavenApp/Queries/aufgabe2_details.sql
 
 					"-- experience_details\n" + 
 					"-- basiert auf Query 'Aufgabe 2'\n" + 
 					"\n" + 
+					"select * from (\n" + 
 					"select 	\n" + 
 					"	p.ausschreibungs_id,\n" + 
 					"    p.token vorgaenger, \n" + 
 					"    a.token nachfolger,\n" + 
-					"    au.ausschreibungs_inhalt\n" + 
+					"    au.ausschreibungs_inhalt,\n" + 
+					"           row_number() over (partition by p.ausschreibungs_id) as row_numb\n" + 
 					"from (\n" + 
 					"	select \n" + 
 					"		ausschreibungs_id, \n" + 
@@ -86,9 +103,8 @@ public class SimpleServlet extends HttpServlet {
 					"and au.suchbegriff_job = 'Projektmanager'\n" + 
 					"\n" + 
 					"and p.token = ?\n" + 
-					"order by p.ausschreibungs_id;\n" + 
-					""
-					
+					"order by p.ausschreibungs_id) without_duplicates\n" + 
+					"where row_numb = 1;\n" 
 					);
 			preparedStmt.setString(1, cond);
 			
@@ -97,38 +113,7 @@ public class SimpleServlet extends HttpServlet {
 				result_of_query = result_of_query + rs.getString("ausschreibungs_inhalt") + "\r\n" + "\r\n";		
 			}
 			out.println(result_of_query);
-		}
-		
-
-// 					alter versuch. (vor 29-May-2019.). War gedacht für Aufgaben 1 und 2/
-//					"SELECT CONCAT(\n" + 
-//					"    '[', \n" + 
-//					"    GROUP_CONCAT(json_object('token', token, 'token_count', token_count)),\n" + 
-//					"    ']'\n" + 
-//					") FROM (\n" + 
-//					"select token, pos, count(token) token_count from (\n" + 
-//					"select \n" + 
-//					"	a.ausschreibungs_id id, \n" + 
-//					"    a.ausschreibungs_inhalt, \n" + 
-//					"    a.ausschreibungs_titel, \n" + 
-//					"    a.datum, firma, \n" + 
-//					"    a.suchbegriff_job, \n" + 
-//					"    a.suchbegriff_ort, \n" + 
-//					"    a.webseite,\n" + 
-//					"    pos.ausschreibungs_inhalt_pos_id, \n" + 
-//					"    pos.ausschreibungs_id, \n" + 
-//					"    pos.token, \n" + 
-//					"    pos.pos\n" + 
-//					"from test.Ausschreibungen a\n" + 
-//					"inner join test.Ausschreibungs_Inhalt_POS pos\n" + 
-//					"on a.ausschreibungs_id=pos.ausschreibungs_id\n" + 
-//					"where a.suchbegriff_job = \"Data Scientist\"\n" + 
-//					"-- viele Englische Wörter bekommen den pos 'NE' zugeordnet. \n" + 
-//					"-- Diese werden hier nicht berücksichtigt.\n" + 
-//					"-- Dadurch fehlen einige wichtige Begriffe, wie z. B. \"Python\" oder Science.\n" + 
-//					"-- Das Problem könnte man lösen, wenn ein Language Detector eingebaut wird.\n" + 
-//					"and pos.pos in ('NN')) results group by results.token order by token_count desc limit 10) limited_results;\n" + 
-//					"\n" 			
+		}			
 		
 		} catch (SQLException se) {
 			// Handle errors for JDBC
@@ -148,8 +133,11 @@ public class SimpleServlet extends HttpServlet {
 		} // end try
 	}// end main
 
+	// doPost wird verwendet, um den Crawler und das NLP aufzurufen.
+	// Das NLP kann erst laufen, nachdem der Crawler seine Arbeit beendet hat.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		PrintWriter out = response.getWriter();
 		String job_result = request.getParameter("job");
 		String place_result = request.getParameter("place");
@@ -161,7 +149,7 @@ public class SimpleServlet extends HttpServlet {
 		System.out.println(place_result);
 		System.out.println(URL_result);
 
-		// Test der gesamten Pipeline:
+		// Aufruf der gesamten Pipeline:
 		MyCrawler crawler = new MyCrawler();
 		try {
 			crawler.crawl(URL_result, job_result, place_result);
@@ -170,7 +158,7 @@ public class SimpleServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
-//test des stanford parsers
+// test des stanford parsers
 //		MyStanfordNLP mySNLP;
 //		try {
 //			mySNLP = new MyStanfordNLP(job_result);

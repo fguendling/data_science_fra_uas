@@ -1,4 +1,9 @@
-// der code muss laufen, nachdem das Chart geladen wurden
+// Der Code muss laufen, nachdem das Chart geladen wurden.
+//
+// Wird aufgerufen, wenn man im zweiten Chart auf einen der Balken klickt.
+// Lädt die detaillierten Ausschreibungstexte.
+// Die Ladezeit ist nicht optimal, das Beispiel soll vielmehr zeigen, 
+// dass auch Anfragen ans Backend durchgereicht werden können.
 
 function drill_down() {
 	console.log('actually called drill down');

@@ -1,5 +1,14 @@
+/*
+ * 
+ * 
+ * 
+ * Der Crawler holt sich die entsprechenden Stellenausschreibungen von https://de.indeed.com
+ * Die Ergebnisse werden in die Datenbank geschrieben.
+ * 
+ * 
+ * 
+ */
 package data.science;
-
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -31,24 +40,23 @@ public class MyCrawler {
 		}
 	}
 
+	// Die crawl() Methode erwartet drei Argumente (= url, suchbegriff, ort).
 	public void crawl(String main_search_url, String job_result, String place_result) throws IOException, SQLException {
 
 		// Basic JobSuche enthält in der Url sowohl Suchbegriff als auch Ort.
 		Document doc = Jsoup.connect(main_search_url).get();
 
-		// es wird später geschaut, ob die Seite in der pagination den Begriff "Weiter"
-		// enthält
+		// es wird später geschaut, ob die Seite in der pagination den Begriff "Weiter" enthält
 		Element test_element = doc.select("div.pagination").first();
 		pagination_test_string = test_element.outerHtml();
 
-		// der Wert des data-pp Attributs wird benötigt um die korrekten Links zu
-		// ermitteln.
-
+		// der Wert des data-pp Attributs wird benötigt um die korrekten Links zu ermitteln.
 		if (pagination_test_string.contains("Weiter")) {
 			href_val = test_element.child(child_count).attr("abs:href");
 			data_pp_value = test_element.child(child_count).attr("data-pp");
 
 		} else {
+			// Es sind keine weiteren Seiten zu crawlen
 			System.out.println("it's fine");
 
 		}
@@ -103,14 +111,13 @@ public class MyCrawler {
 
 		}
 
-		// suffix = suffix + 10;
 		// child_count ist die Stelle in der Pagination, die gerade relevant ist.
 		child_count = child_count + 1;
 
 		while (pagination_test_string.contains("Weiter")) {
 
 			// Beim Sprung von Seite 1 auf zwei kommt ein weiteres child "zurück" dazu,
-			// daher ist hier noch ein weiteres mal hoch zu zählen.
+			// daher ist hier noch ein weiteres mal hochzuzählen.
 			if ((pagination_test_string.contains("Zurück") == false)) {
 				child_count = child_count + 1;
 			}
@@ -120,8 +127,7 @@ public class MyCrawler {
 				child_count = 6;
 			}
 
-			// Es gibt ein ganz gemeines data-pp attribut, das in der Pagination versteckt
-			// ist.
+			// Es gibt ein ganz gemeines data-pp attribut, das in der Pagination versteckt ist.
 			// Jede Ergebnisseite hat einen solchen data-pp Wert zugeordnet.
 			// Dieser wird bei einem Klick auf den Link zur Ergebnisseite
 			// per JavaScript verarbeitet und temporär zur URL hinzugefügt.

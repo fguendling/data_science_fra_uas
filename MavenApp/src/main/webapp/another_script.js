@@ -1,3 +1,6 @@
+// Der Code in diesem File war als "CMS" gedacht um die Charts via Ajax Call auszutauschen.
+// Wird letztendlich nicht verwendet.
+
 $(document).ready(function() {
 
 	// Änderung der Farben im Header.

@@ -10,7 +10,5 @@ select suchbegriff_ort, count(ausschreibungs_id) counter, datum 'Crawl_Datum'
 from Ausschreibungen
 where suchbegriff_job = 'Data Scientist' 
 group by suchbegriff_ort) count_by_cities;
--- Hamburg noch integrieren
-
 
 

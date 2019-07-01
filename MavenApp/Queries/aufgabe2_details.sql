@@ -1,11 +1,13 @@
 -- experience_details
 -- basiert auf Query 'Aufgabe 2'
 
+select * from (
 select 	
 	p.ausschreibungs_id,
     p.token vorgaenger, 
     a.token nachfolger,
-    au.ausschreibungs_inhalt
+    au.ausschreibungs_inhalt,
+           row_number() over (partition by p.ausschreibungs_id) as row_numb
 from (
 	select 
 		ausschreibungs_id, 
@@ -23,4 +25,5 @@ and a.token like 'jahre'
 and au.suchbegriff_job = 'Projektmanager'
 
 -- and p.token = ?
-order by p.ausschreibungs_id;
+order by p.ausschreibungs_id) without_duplicates
+where row_numb = 1;

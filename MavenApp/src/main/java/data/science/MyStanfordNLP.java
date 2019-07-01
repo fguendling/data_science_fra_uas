@@ -1,3 +1,13 @@
+/*
+ * 
+ * 
+ * 
+ * Die Klasse wurde erstellt, um StanfordNLP zu evaluieren. 
+ * Für die finale App ist diese Klasse nicht relevant.
+ * 
+ * 
+ * 
+ */
 package data.science;
 
 import edu.stanford.nlp.coref.data.CorefChain;

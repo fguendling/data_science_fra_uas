@@ -1,6 +1,7 @@
 // dieses Beispiel verwendet v3 von d3.js und wurde entnommen von
 // http://bl.ocks.org/Jverma/887877fc5c2c2d99be10 
 // wird in der finalen Version nicht verwendet.
+// eine Funktion weiter unten wird allerdings verwendet (chart_2_v4()).
 function awesome_chart_example() {
 	
 	$(document).ready(
@@ -229,7 +230,5 @@ function onclick_example() {
 							});
 				});
 			});
-	
 });
 };
-

@@ -1,6 +1,5 @@
--- actual query for Aufgabe 1 (Bar Chart(Drill Down))
--- gibt die Häufigsten Fachbegriffe aus
--- aktuell noch nicht korrekt
+-- War ein Entwurf für den ersten Chart.
+-- Wird so in dieser Form nicht verwendet.
 
 SELECT CONCAT(
     '[', 

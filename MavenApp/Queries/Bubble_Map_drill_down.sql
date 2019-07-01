@@ -28,7 +28,7 @@ select concat(vorgaenger, ' ', nachfolger) concatenated_result from
 		on 
 			pos.ausschreibungs_id = a.ausschreibungs_id
 		where a.suchbegriff_job = 'Data Scientist'
-        and a.suchbegriff_ort = 'Berlin') successor_prep
+        and a.suchbegriff_ort = 'Stuttgart') successor_prep
         -- hier muss der Ort angepasst werden
 	inner join Ausschreibungs_Inhalt_POS
 	on successor_prep.successor_token = Ausschreibungs_Inhalt_POS.ausschreibungs_inhalt_pos_id) looking_good

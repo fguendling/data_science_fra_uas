@@ -1,19 +1,19 @@
 [
 	{
 		"token": "Java",
-		"token_count": 247
+		"token_count": 222
 	},
 	{
 		"token": "C#",
-		"token_count": 164
+		"token_count": 138
 	},
 	{
 		"token": "C++",
-		"token_count": 91
+		"token_count": 82
 	},
 	{
 		"token": "JavaScript",
-		"token_count": 89
+		"token_count": 73
 	},
 	{
 		"token": "C",
@@ -28,12 +28,12 @@
 		"token_count": 27
 	},
 	{
-		"token": "TypeScript",
-		"token_count": 17
-	},
-	{
 		"token": "ABAP",
 		"token_count": 11
+	},
+	{
+		"token": "TypeScript",
+		"token_count": 8
 	},
 	{
 		"token": "SPS",

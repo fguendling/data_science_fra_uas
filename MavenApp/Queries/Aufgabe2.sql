@@ -1,7 +1,5 @@
 -- Aufgabe 2
 -- verwendet analytic function (lag), um vorgänger der tokens zu ermitteln.
--- Hier zusätzlich noch die am Häufigsten verwendeten Nomen
-
 
 SELECT CONCAT(
     '[', 
@@ -33,3 +31,9 @@ and au.suchbegriff_job = 'Projektmanager'
 group by vorgaenger
 order by erfahrungs_count desc, p.ausschreibungs_id) json_results
 ;
+
+
+
+
+
+
